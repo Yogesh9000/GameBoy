@@ -9,5 +9,5 @@ add_compile_options(-Wconversion)
 
 find_package(SDL3 CONFIG REQUIRED)
 
-add_executable(main main.cpp)
+add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE SDL3::SDL3)
