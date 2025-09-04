@@ -9,5 +9,11 @@ add_compile_options(-Wconversion)
 
 find_package(SDL3 CONFIG REQUIRED)
 
-add_executable(main src/main.cpp)
+add_executable(main src/main.cpp
+                    src/bootrom.cpp
+                    src/concretememoryrange.cpp
+                    src/sdldisplay.cpp
+                    src/ppu.cpp
+                    src/mmu.cpp
+)
 target_link_libraries(main PRIVATE SDL3::SDL3)
