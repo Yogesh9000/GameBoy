@@ -2,7 +2,6 @@
 
 #include <array>
 #include <cstdint>
-#include <iterator>
 
 #include "../bitutils.hpp"
 #include "../common.hpp"

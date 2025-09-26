@@ -1,7 +1,10 @@
 #pragma once
 
+#include "concretememoryrange.hpp"
 #include "display.hpp"
 #include "mmu.hpp"
+#include "phases/oamsearch.hpp"
+#include "phases/ppuphase.hpp"
 
 class Ppu : public MemoryRange
 {
@@ -22,11 +25,10 @@ public:
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
 private:
-  void DrawCurrentLine();
-
-private:
+  ConcreteMemoryRange _oamRam;
   std::uint8_t _ly;
-  int _dotsThisLine;
   MemoryManagementUnit &_mmu;
   Display &_display;
+  OamSearch _oamPhase;
+  PpuPhase *_phase;
 };
