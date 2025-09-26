@@ -6,7 +6,6 @@
 class Ppu : public MemoryRange
 {
 private:
-  constexpr static int LY_REGISTER_ADDRESS{0xFF44};
 
 public:
   Ppu(MemoryManagementUnit &mmu, Display &display);
