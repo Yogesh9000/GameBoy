@@ -90,7 +90,7 @@ private:
 
   constexpr static std::uint16_t OAM_START_ADDRESS{0xFE00};
   constexpr static int OAM_ENTRY_SIZE{4};  // in bytes
-  MemoryManagementUnit _mmu;
+  MemoryManagementUnit &_mmu;
   OamSearchPhase _phase;
   int _tilesScanned;
   std::uint8_t _tileY;
