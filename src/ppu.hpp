@@ -27,6 +27,9 @@ public:
 private:
   ConcreteMemoryRange _oamRam;
   std::uint8_t _ly;
+  std::uint8_t _lcdc;
+  std::uint8_t _scx;
+  std::uint8_t _scy;
   MemoryManagementUnit &_mmu;
   Display &_display;
   OamSearch _oamPhase;
