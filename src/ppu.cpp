@@ -1,20 +1,28 @@
 #include "ppu.hpp"
 
 #include "common.hpp"
+#include "phases/hblank.hpp"
+#include "phases/oamsearch.hpp"
+#include "phases/vblank.hpp"
 
 Ppu::Ppu(MemoryManagementUnit &mmu, Display &display)
     : _oamRam{OAM_SIZE, OAM_START_ADDRESS},
       _ly(0),
       _mmu(mmu),
       _display(display),
-      _oamPhase(mmu),
-      _phase(&_oamPhase)
+      _oamPhase(_mmu),
+      _pixelrenderingPhase(_mmu, _display),
+      _hblankPhase(),
+      _vblankPhase(_mmu, _ly),
+      _phase(&_oamPhase),
+      _mode(PpuMode::OamSearch)
 {
   _phase->Start();
 }
 
 void Ppu::Tick()
 {
+  ++_dotsThisLine;
   if (_phase && _phase->Tick())
   {
   }
@@ -22,6 +30,57 @@ void Ppu::Tick()
   {
     // switch phase here
     _phase = nullptr;
+    switch (_mode)
+    {
+      case PpuMode::OamSearch:
+      {
+        _mode = PpuMode::PixelRendering;
+        _phase = &_pixelrenderingPhase;
+        _pixelrenderingPhase.Start();
+        Error("PixelRendering\n");
+        break;
+      }
+      case PpuMode::PixelRendering:
+      {
+        _mode = PpuMode::HBlank;
+        _phase = &_hblankPhase;
+        auto hblankLength = 456 - _dotsThisLine;
+        _hblankPhase.SetHBlankModeLength(hblankLength);
+        _phase->Start();
+        Error("HBlank\n");
+        break;
+      }
+      case PpuMode::HBlank:
+      {
+        ++_ly;
+        if (_ly < 144)
+        {
+          Error("OamSearch\n");
+          _dotsThisLine = 0;
+          _mode = PpuMode::OamSearch;
+          _phase = &_oamPhase;
+          _phase->Start();
+        }
+        else
+        {
+          Error("VBlank\n");
+          _mode = PpuMode::VBlank;
+          _phase = &_vblankPhase;
+          _phase->Start();
+        }
+        break;
+      }
+      case PpuMode::VBlank:
+      {
+        _display.UpdateFrame();
+        _ly = 0;
+        _mode = PpuMode::OamSearch;
+        _phase = &_oamPhase;
+        _oamPhase.Start();
+        Error("OamSearch\n");
+        break;
+      }
+    }
   }
 }
 
@@ -70,7 +129,6 @@ void Ppu::Write(std::uint16_t addr, std::uint8_t data)
   }
   else if (addr == SCY_REGISTER_ADDRESS)
   {
-    std::cout << "scy: " << static_cast<int>(data) << "\n";
     _scy = data;
   }
   else if (_oamRam.Contains(addr))
