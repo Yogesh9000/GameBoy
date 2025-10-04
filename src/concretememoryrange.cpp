@@ -15,7 +15,7 @@ ConcreteMemoryRange::ConcreteMemoryRange(std::size_t size, std::size_t offset)
 
 bool ConcreteMemoryRange::Contains(std::uint16_t addr) const
 {
-  return addr >= _offset && addr <= (_offset + _memory.size());
+  return addr >= _offset && addr < (_offset + _memory.size());
 }
 
 std::uint8_t ConcreteMemoryRange::Read(std::uint16_t addr) const
