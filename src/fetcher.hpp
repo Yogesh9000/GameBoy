@@ -40,7 +40,7 @@ public:
     _bgWinFifo.clear();
     _clockDivider = 2;
     _fetcherX = 0;
-    _fetcherY = _mmu.Read(LY_REGISTER_ADDRESS);
+    _ly = _mmu.Read(LY_REGISTER_ADDRESS);
     _droppedInitialTile = false;
   }
 
@@ -67,7 +67,7 @@ public:
       {
         // TODO: Also consider window and sprites
         auto tileToFetchX = ((scx / 8U) + _fetcherX) & 0x1FU;  // 0x1F = 31
-        auto tileToFetchY = (_fetcherY + scy) & 0xFFU;         // 0xFF = 255
+        auto tileToFetchY = (((_ly + scy) & 0xFFU) / 8);         // 0xFF = 255
         auto bgtileIdx =
             (BG_WIN_TILEMAP_ROW_SIZE * tileToFetchY) + tileToFetchX;
         if (BitUtils::Test<3>(
@@ -92,14 +92,14 @@ public:
                                       // starting at 0x8000 - 0x8FFF
         {
           tileDataLowAddress = static_cast<std::uint16_t>(
-              BG_WIN_TILEDATA_ADDRESS1 + (_tileIdx * TILE_DATA_SIZE));
+              BG_WIN_TILEDATA_ADDRESS1 + (_tileIdx * TILE_DATA_SIZE) + (((_ly + scy) & 0x7U) * 2));
         }
         else  // else use tile data map at 0x8800 - 0x97FF
         {
           tileDataLowAddress = static_cast<std::uint16_t>(
               BG_WIN_TILEDATA_ADDRESS0
               + (static_cast<int>(_tileIdx)
-                  * static_cast<int>(TILE_DATA_SIZE)));
+                  * static_cast<int>(TILE_DATA_SIZE)) + static_cast<int>(((_ly + scy) & 0x7U)));
         }
         _tileDataLow = _mmu.Read(tileDataLowAddress);
         _state = FetcherState::GetTileData1;
@@ -113,14 +113,14 @@ public:
                                       // starting at 0x8000 - 0x8FFF
         {
           tileDataHighAddress = static_cast<std::uint16_t>(
-              BG_WIN_TILEDATA_ADDRESS1 + (_tileIdx * TILE_DATA_SIZE));
+              BG_WIN_TILEDATA_ADDRESS1 + (_tileIdx * TILE_DATA_SIZE) + (((_ly + scy) & 0x7U) * 2) + 1);
         }
         else  // else use tile data map at 0x8800 - 0x97FF
         {
           tileDataHighAddress = static_cast<std::uint16_t>(
               BG_WIN_TILEDATA_ADDRESS0
               + (static_cast<int>(_tileIdx)
-                  * static_cast<int>(TILE_DATA_SIZE)));
+                  * static_cast<int>(TILE_DATA_SIZE)) + static_cast<int>((((_ly + scy) & 0x7U) * 2)) + 1);
         }
         _tileDataHigh = _mmu.Read(tileDataHighAddress);
         if (_bgWinFifo.size() <= 8)
@@ -181,7 +181,7 @@ private:
       unsigned int screenX = (_fetcherX * 8) + i;
       auto entry = PixelFifoEntry{
           .x = screenX,
-          .y = _fetcherY,
+          .y = _ly,
           .color = colorId,
       };
       _bgWinFifo.emplace_back(entry);
@@ -192,7 +192,7 @@ private:
   std::deque<PixelFifoEntry> &_bgWinFifo;
   int _clockDivider{};
   unsigned int _fetcherX{};
-  unsigned int _fetcherY{};
+  unsigned int _ly{};
   FetcherState _state{};
   // Index of the tile to fetch from background/window tile map
   unsigned int _tileIdx{};
