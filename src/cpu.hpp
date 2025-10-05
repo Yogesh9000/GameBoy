@@ -4,6 +4,9 @@
 
 #include "mmu.hpp"
 #include "register.hpp"
+#include <format>
+#include <iostream>
+
 class Cpu
 {
 public:

@@ -37,7 +37,6 @@ void Ppu::Tick()
         _mode = PpuMode::PixelRendering;
         _phase = &_pixelrenderingPhase;
         _pixelrenderingPhase.Start();
-        Error("PixelRendering\n");
         break;
       }
       case PpuMode::PixelRendering:
@@ -47,7 +46,6 @@ void Ppu::Tick()
         auto hblankLength = 456 - _dotsThisLine;
         _hblankPhase.SetHBlankModeLength(hblankLength);
         _phase->Start();
-        Error("HBlank\n");
         break;
       }
       case PpuMode::HBlank:
@@ -55,7 +53,6 @@ void Ppu::Tick()
         ++_ly;
         if (_ly < 144)
         {
-          Error("OamSearch\n");
           _dotsThisLine = 0;
           _mode = PpuMode::OamSearch;
           _phase = &_oamPhase;
@@ -63,7 +60,6 @@ void Ppu::Tick()
         }
         else
         {
-          Error("VBlank\n");
           _mode = PpuMode::VBlank;
           _phase = &_vblankPhase;
           _phase->Start();
@@ -77,7 +73,6 @@ void Ppu::Tick()
         _mode = PpuMode::OamSearch;
         _phase = &_oamPhase;
         _oamPhase.Start();
-        Error("OamSearch\n");
         break;
       }
     }
