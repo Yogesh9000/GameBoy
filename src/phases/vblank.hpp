@@ -3,7 +3,6 @@
 #include <cstdint>
 #include "ppuphase.hpp"
 #include "../mmu.hpp"
-#include "../common.hpp"
 
 
 class VBlank : public PpuPhase

@@ -53,7 +53,6 @@ void Ppu::Tick()
         ++_ly;
         if (_ly < 144)
         {
-          _dotsThisLine = 0;
           _mode = PpuMode::OamSearch;
           _phase = &_oamPhase;
           _phase->Start();
@@ -76,6 +75,10 @@ void Ppu::Tick()
         break;
       }
     }
+  }
+  if (_dotsThisLine >= MAX_DOTS_PER_SCANLINE)
+  {
+    _dotsThisLine = 0;
   }
 }
 
