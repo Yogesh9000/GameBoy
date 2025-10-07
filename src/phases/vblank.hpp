@@ -26,7 +26,7 @@ public:
       _x = 0;
       ++_ly;
     }
-    return _ly > 153;
+    return _ly <= 153;
   }
 
 private:

@@ -17,7 +17,7 @@ public:
   bool Tick() override
   {
     --_modeLength;
-    return _modeLength <= 0;
+    return _modeLength > 0;
   }
 
 private:
