@@ -1,6 +1,7 @@
 #include "mmu.hpp"
 #include <format>
 #include "common.hpp"
+#include <spdlog/spdlog.h>
 
 auto MemoryManagementUnit::GetMemoryRange(std::uint16_t addr) const
 {
@@ -31,10 +32,7 @@ std::uint8_t MemoryManagementUnit::Read(std::uint16_t addr) const
   }
 
   // return garbage value if no memory range found that contains addr
-  Warning(std::format(
-      "Read: No registered memory region found that contains address: "
-      "{:#06X}\n",
-      addr));
+  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}\n", addr);
   return 0xFF;
 }
 
@@ -47,9 +45,7 @@ void MemoryManagementUnit::Write(std::uint16_t addr, std::uint8_t data)
     memoryRange->get()->Write(addr, data);
     return;
   }
-  Warning(std::format(
-      "Write: No registered memory region found that contains address: {:#06X}\n",
-      addr));
+  SPDLOG_WARN("Write: No registered memory region found that contains address: {:#06X}\n", addr);
 }
 
 void MemoryManagementUnit::AddMemoryRange(

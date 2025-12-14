@@ -11,12 +11,15 @@
 #include "ppu.hpp"
 #include "sdldisplay.hpp"
 
+#include "spdlog/spdlog.h"
+
 int main(int argc, char **argv)
 {
+  spdlog::set_level(spdlog::level::debug);
   // early exit if no rom present
   if (argc != 2)
   {
-    Error("No rom path provided\n");
+    SPDLOG_ERROR("No rom path provided\n");
     return 1;
   }
   char *romPath = argv[1];  // rom filepath
@@ -62,7 +65,7 @@ int main(int argc, char **argv)
     }
   } catch (std::exception &ex)
   {
-    Error(std::format("{}\n", ex.what()));
+    SPDLOG_ERROR("{}\n", ex.what());
   }
   return 0;
 }

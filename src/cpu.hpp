@@ -1,11 +1,12 @@
 #pragma once
 
-// #define DEBUG_CPU
+// #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 
 #include "mmu.hpp"
 #include "register.hpp"
 #include <format>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 class Cpu
 {
@@ -17,12 +18,10 @@ public:
   void Tick()
   {
     auto opcode = _mmu.Read(PC.reg++);
-#ifdef DEBUG_CPU
+#ifdef _DEBUG
     if (opcode != 0xCB)
     {
-      std::cout << std::format(
-          "PC: {:#06X}, Trying to execute instruction {:#04X}\n", PC.reg - 1,
-          opcode);
+      SPDLOG_TRACE("PC: {:#06X}, Trying to execute instruction {:#04X}\n", PC.reg - 1, opcode);
     }
 #endif
     switch (opcode)
@@ -173,11 +172,9 @@ private:
   void TickExtended()
   {
     auto opcode = _mmu.Read(PC.reg++);
-#ifdef DEBUG_CPU
-    std::cout << std::format(
-        "[CB] PC: {:#06X}, Trying to execute instruction {:#02X}\n", PC.reg - 1,
-        opcode);
-#endif
+
+    SPDLOG_TRACE("[CB] PC: {:#06X}, Trying to execute instruction {:#02X}\n", PC.reg - 1, opcode);
+
     switch (opcode)
     {
       case 0x11:

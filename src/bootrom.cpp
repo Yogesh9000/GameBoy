@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <spdlog/spdlog.h>
 
 #include "common.hpp"
 
@@ -48,7 +49,5 @@ std::uint8_t BootRom::Read(std::uint16_t addr) const
 void BootRom::Write(std::uint16_t addr, std::uint8_t data)
 {
   // writes to bootRom are ignored
-  Info(
-      std::format("Ignoring write to BootRom address: {:#06X}, data: {:#04X}\n",
-          addr, data));
+  SPDLOG_WARN("Ignoring write to BootRom address: {:#06X}, data: {:#04X}\n", addr, data);
 }

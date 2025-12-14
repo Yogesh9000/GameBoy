@@ -4,3 +4,4 @@ CMakeToolchain
 
 [requires]
 sdl/3.2.20
+spdlog/1.16.0
