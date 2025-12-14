@@ -1,0 +1,6 @@
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[requires]
+sdl/3.2.20
