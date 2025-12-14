@@ -398,7 +398,7 @@ private:
     SetCY(bit7 == 1U);
   }
 
-  void BitBR(uint bit, std::uint8_t reg)
+  void BitBR(unsigned int bit, std::uint8_t reg)
   {
     auto bitValue = static_cast<std::uint8_t>((reg & (1U << bit)) >> bit);
     SetZ(bitValue == 0);
