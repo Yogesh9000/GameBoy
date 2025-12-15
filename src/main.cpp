@@ -6,6 +6,7 @@
 #include "bootrom.hpp"
 #include "common.hpp"
 #include "concretememoryrange.hpp"
+#include "filememoryrange.hpp"
 #include "cpu.hpp"
 #include "mmu.hpp"
 #include "ppu.hpp"
@@ -17,18 +18,26 @@ int main(int argc, char **argv)
 {
   spdlog::set_level(spdlog::level::debug);
   // early exit if no rom present
-  if (argc != 2)
+  if (argc != 3)
   {
-    SPDLOG_ERROR("No rom path provided\n");
+    SPDLOG_ERROR("No rom paths provided\n");
     return 1;
   }
-  char *romPath = argv[1];  // rom filepath
 
   MemoryManagementUnit mmu;
 
   // load the bootrom and add it to romPath
-  mmu.AddMemoryRange(
-      std::make_shared<BootRom>(std::move(BootRom::Create(romPath))));
+  char *bootRomPath = argv[1];  // rom filepath
+  auto bootRom = std::make_shared<BootRom>();
+  bootRom->Load(bootRomPath);
+  mmu.AddMemoryRange(bootRom);
+
+  // load the game rom
+  char *romPath = argv[2];  // rom filepath
+  auto rom = std::make_shared<FileMemoryRange>();
+  rom->Load(romPath, 0x0);
+  mmu.AddMemoryRange(rom);
+
   // add vram: 0x8000 - 0x9FFF
   constexpr int VRAM_SIZE{1024 * 8};
   constexpr int VRAM_START_ADDRESS{0x8000};

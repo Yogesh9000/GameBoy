@@ -10,11 +10,18 @@ find_package(SDL3 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME} src/main.cpp
-                    src/bootrom.cpp
-                    src/concretememoryrange.cpp
-                    src/sdldisplay.cpp
-                    src/ppu.cpp
-                    src/mmu.cpp
+                   "src/bootrom.hpp"
+                   "src/bootrom.cpp"
+                   "src/concretememoryrange.hpp"
+                   "src/concretememoryrange.cpp"
+                   "src/sdldisplay.hpp"
+                   "src/sdldisplay.cpp"
+                   "src/ppu.hpp"
+                   "src/ppu.cpp"
+                   "src/mmu.hpp"
+                   "src/mmu.cpp"
+                   "src/filememoryrange.hpp"
+                   "src/filememoryrange.cpp"
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
