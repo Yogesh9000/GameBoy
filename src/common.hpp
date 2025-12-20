@@ -19,3 +19,5 @@ constexpr unsigned int BG_WIN_TILEMAP_ROW_SIZE{32};
 
 constexpr unsigned int TILE_DATA_SIZE{16}; // each tile takes 16 bytes
 constexpr unsigned int MAX_DOTS_PER_SCANLINE{456};
+
+constexpr unsigned int BOOTROM_ENABLE_ADDRESS{ 0xFF50 }; // writing to this address disable's bootrom
