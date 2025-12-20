@@ -116,11 +116,20 @@ public:
       case 0x77:
         LdHlR(AF.high);
         break;
+      case 0x78:
+        LdRR(AF.high, BC.high);
+        break;
       case 0x7B:
         LdRR(AF.high, DE.low);
         break;
       case 0x7C:
         LdRR(AF.high, HL.high);
+        break;
+      case 0x7D:
+        LdRR(AF.high, HL.low);
+        break;
+      case 0x86:
+        AddAHl();
         break;
       case 0x90:
         SubR(BC.high);
@@ -202,6 +211,20 @@ private:
 
     AF.high = (res & 0xFFU);
   }
+
+  void AddAHl()
+  {
+    auto data = _mmu.Read(HL.reg);
+    uint16_t res = static_cast<uint16_t>(AF.high) + static_cast<uint16_t>(data);
+
+    SetZ((res & 0xFFU) == 0);
+    SetN(false);
+    SetH(((AF.high ^ data ^ res) & 0x10) != 0);
+    SetCY(((AF.high ^ data ^ res) & 0x100) != 0);
+
+    AF.high = (res & 0xFFU);
+  }
+
   void LdU16A()
   {
     auto low = _mmu.Read(PC.reg++);
