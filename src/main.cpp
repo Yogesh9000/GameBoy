@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   // early exit if no rom present
   if (argc != 3)
   {
-    SPDLOG_ERROR("No rom paths provided\n");
+    SPDLOG_CRITICAL("No rom paths provided\n");
     return 1;
   }
 
