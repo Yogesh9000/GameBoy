@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     }
   } catch (std::exception &ex)
   {
-    SPDLOG_ERROR("{}\n", ex.what());
+    SPDLOG_CRITICAL("{}\n", ex.what());
   }
   return 0;
 }

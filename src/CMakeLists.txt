@@ -1,6 +1,7 @@
 add_executable(${PROJECT_NAME}
                    "main.cpp"
                    "cpu.hpp"
+                   "cpu.cpp"
                    "bootrom.hpp"
                    "bootrom.cpp"
                    "concretememoryrange.hpp"
