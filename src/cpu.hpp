@@ -14,6 +14,8 @@ private:
   void TickExtended();
 
   // opcodes
+  void JpU16();
+  void Nop();
   void SubR(std::uint8_t reg);
   void AddAHl();
   void LdU16A();

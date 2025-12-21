@@ -19,6 +19,9 @@ void Cpu::Tick()
 #endif
   switch (opcode)
   {
+  case 0x00:
+    Nop();
+    break;
   case 0x05:
     DecR(BC.high);
     break;
@@ -136,6 +139,9 @@ void Cpu::Tick()
   case 0xC1:
     PopRR(BC);
     break;
+  case 0xC3:
+    JpU16();
+    break;
   case 0xCB:
     TickExtended();
     break;
@@ -192,6 +198,17 @@ void Cpu::TickExtended()
 }
 
 // opcodes
+void Cpu::JpU16()
+{
+  auto lsb = _mmu.Read(PC.reg++);
+  auto msb = _mmu.Read(PC.reg++);
+  PC.reg = ToU16(lsb, msb);
+}
+
+void Cpu::Nop()
+{
+}
+
 void Cpu::SubR(std::uint8_t reg)
 {
   uint16_t res = static_cast<uint16_t>(AF.high) - static_cast<uint16_t>(reg);
