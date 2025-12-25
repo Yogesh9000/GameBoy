@@ -35,7 +35,7 @@ template <unsigned int N, typename T>
   requires std::unsigned_integral<T> || std::convertible_to<T, unsigned int>
 constexpr void Unset(T &data)
 {
-  data = Unset(std::move(data));
+  data = Unset<N>(std::move(data));
 }
 
 static_assert(Unset<0>(1U) == 0U, "Unset not working");
