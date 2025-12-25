@@ -267,6 +267,8 @@ void Cpu::DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType)
   _mmu.Write(SP.reg, PC.low);
   SP.reg--;
   _mmu.Write(SP.reg, PC.high);
+  SP.reg--;
+  _mmu.Write(SP.reg, PC.low);
 
   switch (interruptType)
   {
