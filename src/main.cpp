@@ -38,6 +38,11 @@ int main(int argc, char **argv)
   rom->Load(romPath, 0x0);
   mmu.AddMemoryRange(rom);
 
+  // add work ram 1: 0xC000 - 0xCFFF
+  mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x1000, 0xC000));
+  // add work ram 1: 0xD000 - 0xDFFF
+  mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x1000, 0xD000));
+
   // add vram: 0x8000 - 0x9FFF
   constexpr int VRAM_SIZE{1024 * 8};
   constexpr int VRAM_START_ADDRESS{0x8000};
