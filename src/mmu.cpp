@@ -45,7 +45,7 @@ void MemoryManagementUnit::Write(std::uint16_t addr, std::uint8_t data)
     memoryRange->get()->Write(addr, data);
     return;
   }
-  SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}\n", data, addr);
+  SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
 }
 
 void MemoryManagementUnit::AddMemoryRange(
