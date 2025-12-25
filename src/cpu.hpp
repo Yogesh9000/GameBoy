@@ -2,6 +2,8 @@
 
 #include "mmu.hpp"
 #include "register.hpp"
+#include "interrupt.hpp"
+#include <memory>
 
 class Cpu
 {
@@ -13,7 +15,11 @@ public:
 private:
   void TickExtended();
 
+  void HandleInterruptsIfAny();
+  void DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType);
+
   // opcodes
+  void Di();
   void JpU16();
   void Nop();
   void SubR(std::uint8_t reg);
@@ -88,4 +94,5 @@ private:
 
 private:
   MemoryManagementUnit _mmu;
+  std::shared_ptr<Interrupt> _interrupt;
 };

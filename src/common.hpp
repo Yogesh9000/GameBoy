@@ -21,3 +21,12 @@ constexpr unsigned int TILE_DATA_SIZE{16}; // each tile takes 16 bytes
 constexpr unsigned int MAX_DOTS_PER_SCANLINE{456};
 
 constexpr unsigned int BOOTROM_ENABLE_ADDRESS{ 0xFF50 }; // writing to this address disable's bootrom
+
+constexpr unsigned int INTERRUPT_ENABLE{ 0xFFFF };
+constexpr unsigned int INTERRUPT_FLAG{ 0xFF0F };
+
+constexpr unsigned int VBLANK_INTERRUPT_HANDLER_ADDRESS{ 0x40 };
+constexpr unsigned int STAT_INTERRUPT_HANDLER_ADDRESS{ 0x48 };
+constexpr unsigned int TIMER_INTERRUPT_HANDLER_ADDRESS{ 0x50 };
+constexpr unsigned int SERIAL_INTERRUPT_HANDLER_ADDRESS{ 0x58 };
+constexpr unsigned int JOYPAD_INTERRUPT_HANDLER_ADDRESS{ 0x60 };

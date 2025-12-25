@@ -14,6 +14,8 @@ add_executable(${PROJECT_NAME}
                    "mmu.cpp"
                    "filememoryrange.hpp"
                    "filememoryrange.cpp"
+                   "interrupt.hpp"
+                   "interrupt.cpp"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
