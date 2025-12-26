@@ -38,6 +38,10 @@ int main(int argc, char **argv)
   rom->Load(romPath, 0x0);
   mmu.AddMemoryRange(rom);
 
+  // TODO: external ram comes from catridge, so we should not need to explicitly register the external ram here
+  //       This will probably be handled by Mappers for catridge when I implement one
+  // add external ram: 0xA000 - 0xBFFF
+  mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x2000, 0xA000));
   // add work ram 1: 0xC000 - 0xCFFF
   mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x1000, 0xC000));
   // add work ram 1: 0xD000 - 0xDFFF
