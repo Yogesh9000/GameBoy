@@ -22,7 +22,7 @@ public:
                               // (scroll register & 7) tiles are dropped
     if (_pixelsToDrop > 8)
     {
-      std::cout << "Debug\n";
+      // TODO: add logging
     }
   }
 
