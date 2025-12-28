@@ -18,6 +18,8 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
+  std::uint8_t& Address(std::uint16_t addr) override;
+
   void Load(const std::string &filePath, int offset);
 
 private:

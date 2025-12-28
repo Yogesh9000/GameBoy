@@ -134,3 +134,32 @@ void Ppu::Write(std::uint16_t addr, std::uint8_t data)
     _oamRam.Write(addr, data);
   }
 }
+
+std::uint8_t& Ppu::Address(std::uint16_t addr)
+{
+  if (addr == LY_REGISTER_ADDRESS)
+  {
+    return _ly;
+  }
+  else if (addr == LCDC_REGISTER_ADDRESS)
+  {
+    return _lcdc;
+  }
+  else if (addr == SCX_REGISTER_ADDRESS)
+  {
+    return _scx;
+  }
+  else if (addr == SCY_REGISTER_ADDRESS)
+  {
+    return _scy;
+  }
+  else if (_oamRam.Contains(addr))
+  {
+    return _oamRam.Address(addr);
+  }
+
+  // if address is not presesnt, return dummy value
+  static std::uint8_t dummy;
+  dummy = 0xFF;
+  return dummy;
+}

@@ -24,6 +24,8 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data);
 
+  std::uint8_t& Address(std::uint16_t addr);
+
   void AddMemoryRange(std::shared_ptr<MemoryRange> memoryRange);
 
 private:

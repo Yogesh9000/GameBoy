@@ -43,3 +43,22 @@ void Interrupt::Write(std::uint16_t addr, std::uint8_t data)
   }
   SPDLOG_TRACE("Ignoring write to invalid address: {}", addr);
 }
+
+std::uint8_t& Interrupt::Address(std::uint16_t addr)
+{
+
+  if (addr == INTERRUPT_ENABLE)
+  {
+    return _ie;
+  }
+  else if (addr == INTERRUPT_FLAG)
+  {
+    return _if;
+  }
+
+  // if address is not presesnt, return dummy value
+  SPDLOG_TRACE("Trying to read invalid address: {}, returning 0xFF", addr);
+  static std::uint8_t dummy;
+  dummy = 0xFF;
+  return dummy;
+}

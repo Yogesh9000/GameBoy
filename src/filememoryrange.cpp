@@ -56,3 +56,18 @@ void FileMemoryRange::Write(std::uint16_t addr, std::uint8_t data)
     _memory[addr - _offset] = data;
   }
 }
+
+std::uint8_t& FileMemoryRange::Address(std::uint16_t addr)
+{
+  // return data from memroy if memory range contains the address
+  if (Contains(addr))
+  {
+    // adjust address by substracting the offset
+    return _memory[addr - _offset];
+  }
+
+  // return dummy value if memory range does not contain addr
+  static std::uint8_t dummy;
+  dummy = 0xFF;
+  return dummy;
+}

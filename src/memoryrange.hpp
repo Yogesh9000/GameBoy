@@ -17,4 +17,5 @@ struct MemoryRange
   [[nodiscard]]
   virtual std::uint8_t Read(std::uint16_t addr) const = 0;
   virtual void Write(std::uint16_t addr, std::uint8_t data) = 0;
+  virtual std::uint8_t& Address(std::uint16_t addr) = 0;
 };

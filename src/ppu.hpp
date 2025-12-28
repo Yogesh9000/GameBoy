@@ -35,6 +35,8 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
+  std::uint8_t& Address(std::uint16_t addr) override;
+
 private:
   ConcreteMemoryRange _oamRam;
   std::uint8_t _ly{};

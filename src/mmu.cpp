@@ -48,6 +48,23 @@ void MemoryManagementUnit::Write(std::uint16_t addr, std::uint8_t data)
   SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
 }
 
+std::uint8_t& MemoryManagementUnit::Address(std::uint16_t addr)
+{
+
+  auto memoryRange = GetMemoryRange(addr);
+  // If we found a memory range read from it
+  if (memoryRange != _memoryRanges.cend())
+  {
+    return memoryRange->get()->Address(addr);
+  }
+
+  // return garbage value if no memory range found that contains addr
+  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}\n", addr);
+  static std::uint8_t dummy;
+  dummy = 0xFF;
+  return dummy;
+}
+
 void MemoryManagementUnit::AddMemoryRange(
     std::shared_ptr<MemoryRange> memoryRange)
 {
