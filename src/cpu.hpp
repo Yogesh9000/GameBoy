@@ -19,6 +19,7 @@ private:
   void DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType);
 
   // opcodes
+  void DecHl();
   void LdAU16();
   void LdSpHl();
   void LdHlS8();
@@ -96,8 +97,20 @@ private:
   void IncRr(Register& reg) ;
 
   // extended opcodes
+
+  void Rlc(uint8_t& reg);
   void RlR(std::uint8_t& reg) ;
   void BitBR(unsigned int bit, std::uint8_t reg) ;
+  void Rrc(uint8_t& reg);
+  void Rl(uint8_t& reg);
+  void Rr(uint8_t& reg);
+  void Sla(uint8_t& reg);
+  void Sra(uint8_t& reg);
+  void Srl(uint8_t& reg);
+  void Swap(uint8_t& reg);
+  void Bit(uint8_t reg, uint8_t bit);
+  void Res(uint8_t& reg, uint8_t bit);
+  void Set(uint8_t& reg, uint8_t bit);
 
   // utility
 

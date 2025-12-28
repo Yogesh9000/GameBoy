@@ -193,6 +193,9 @@ void Cpu::Tick()
   case 0x34:
     IncIHl();
     break;
+  case 0x35:
+    DecHl();
+    break;
   case 0x36:
     LdHlU8();
     break;
@@ -783,11 +786,772 @@ void Cpu::TickExtended()
 
   switch (opcode)
   {
+  case 0x00:
+    Rlc(BC.high);
+    break;
+  case 0x01:
+    Rlc(BC.low);
+    break;
+  case 0x02:
+    Rlc(DE.high);
+    break;
+  case 0x03:
+    Rlc(DE.low);
+    break;
+  case 0x04:
+    Rlc(HL.high);
+    break;
+  case 0x05:
+    Rlc(HL.low);
+    break;
+  case 0x06:
+    Rlc(_mmu.Address(HL.reg));
+    break;
+  case 0x07:
+    Rlc(AF.high);
+    break;
+  case 0x08:
+    Rrc(BC.high);
+    break;
+  case 0x09:
+    Rrc(BC.low);
+    break;
+  case 0x0A:
+    Rrc(DE.high);
+    break;
+  case 0x0B:
+    Rrc(DE.low);
+    break;
+  case 0x0C:
+    Rrc(HL.high);
+    break;
+  case 0x0D:
+    Rrc(HL.low);
+    break;
+  case 0x0E:
+    Rrc(_mmu.Address(HL.reg));
+    break;
+  case 0x0F:
+    Rrc(AF.high);
+    break;
+  case 0x10:
+    Rl(BC.high);
+    break;
   case 0x11:
-    RlR(BC.low);
+    Rl(BC.low);
+    break;
+  case 0x12:
+    Rl(DE.high);
+    break;
+  case 0x13:
+    Rl(DE.low);
+    break;
+  case 0x14:
+    Rl(HL.high);
+    break;
+  case 0x15:
+    Rl(HL.low);
+    break;
+  case 0x16:
+    Rl(_mmu.Address(HL.reg));
+    break;
+  case 0x17:
+    Rl(AF.high); break;
+  case 0x18:
+    Rr(BC.high);
+    break;
+  case 0x19:
+    Rr(BC.low);
+    break;
+  case 0x1A:
+    Rr(DE.high);
+    break;
+  case 0x1B:
+    Rr(DE.low);
+    break;
+  case 0x1C:
+    Rr(HL.high);
+    break;
+  case 0x1D:
+    Rr(HL.low);
+    break;
+  case 0x1E:
+    Rr(_mmu.Address(HL.reg));
+    break;
+  case 0x1F:
+    Rr(AF.high);
+    break;
+  case 0x20:
+    Sla(BC.high);
+    break;
+  case 0x21:
+    Sla(BC.low);
+    break;
+  case 0x22:
+    Sla(DE.high);
+    break;
+  case 0x23:
+    Sla(DE.low);
+    break;
+  case 0x24:
+    Sla(HL.high);
+    break;
+  case 0x25:
+    Sla(HL.low);
+    break;
+  case 0x26:
+    Sla(_mmu.Address(HL.reg));
+    break;
+  case 0x27:
+    Sla(AF.high);
+    break;
+  case 0x28:
+    Sra(BC.high);
+    break;
+  case 0x29:
+    Sra(BC.low);
+    break;
+  case 0x2A:
+    Sra(DE.high);
+    break;
+  case 0x2B:
+    Sra(DE.low);
+    break;
+  case 0x2C:
+    Sra(HL.high);
+    break;
+  case 0x2D:
+    Sra(HL.low);
+    break;
+  case 0x2E:
+    Sra(_mmu.Address(HL.reg));
+    break;
+  case 0x2F:
+    Sra(AF.high);
+    break;
+  case 0x30:
+    Swap(BC.high);
+    break;
+  case 0x31:
+    Swap(BC.low);
+    break;
+  case 0x32:
+    Swap(DE.high);
+    break;
+  case 0x33:
+    Swap(DE.low);
+    break;
+  case 0x34:
+    Swap(HL.high);
+    break;
+  case 0x35:
+    Swap(HL.low);
+    break;
+  case 0x36:
+    Swap(_mmu.Address(HL.reg));
+    break;
+  case 0x37:
+    Swap(AF.high);
+    break;
+  case 0x38:
+    Srl(BC.high);
+    break;
+  case 0x39:
+    Srl(BC.low);
+    break;
+  case 0x3A:
+    Srl(DE.high);
+    break;
+  case 0x3B:
+    Srl(DE.low);
+    break;
+  case 0x3C:
+    Srl(HL.high);
+    break;
+  case 0x3D:
+    Srl(HL.low);
+    break;
+  case 0x3E:
+    Srl(_mmu.Address(HL.reg));
+    break;
+  case 0x3F:
+    Srl(AF.high);
+    break;
+  case 0x40:
+    Bit(BC.high, 0);
+    break;
+  case 0x41:
+    Bit(BC.low, 0);
+    break;
+  case 0x42:
+    Bit(DE.high, 0);
+    break;
+  case 0x43:
+    Bit(DE.low, 0);
+    break;
+  case 0x44:
+    Bit(HL.high, 0);
+    break;
+  case 0x45:
+    Bit(HL.low, 0);
+    break;
+  case 0x46:
+    Bit(_mmu.Read(HL.reg), 0);
+    break;
+  case 0x47:
+    Bit(AF.high, 0);
+    break;
+  case 0x48:
+    Bit(BC.high, 1);
+    break;
+  case 0x49:
+    Bit(BC.low, 1);
+    break;
+  case 0x4A:
+    Bit(DE.high, 1);
+    break;
+  case 0x4B:
+    Bit(DE.low, 1);
+    break;
+  case 0x4C:
+    Bit(HL.high, 1);
+    break;
+  case 0x4D:
+    Bit(HL.low, 1);
+    break;
+  case 0x4E:
+    Bit(_mmu.Read(HL.reg), 1);
+    break;
+  case 0x4F:
+    Bit(AF.high, 1);
+    break;
+  case 0x50:
+    Bit(BC.high, 2);
+    break;
+  case 0x51:
+    Bit(BC.low, 2);
+    break;
+  case 0x52:
+    Bit(DE.high, 2);
+    break;
+  case 0x53:
+    Bit(DE.low, 2);
+    break;
+  case 0x54:
+    Bit(HL.high, 2);
+    break;
+  case 0x55:
+    Bit(HL.low, 2);
+    break;
+  case 0x56:
+    Bit(_mmu.Read(HL.reg), 2);
+    break;
+  case 0x57:
+    Bit(AF.high, 2);
+    break;
+  case 0x58:
+    Bit(BC.high, 3);
+    break;
+  case 0x59:
+    Bit(BC.low, 3);
+    break;
+  case 0x5A:
+    Bit(DE.high, 3);
+    break;
+  case 0x5B:
+    Bit(DE.low, 3);
+    break;
+  case 0x5C:
+    Bit(HL.high, 3);
+    break;
+  case 0x5D:
+    Bit(HL.low, 3);
+    break;
+  case 0x5E:
+    Bit(_mmu.Read(HL.reg), 3);
+    break;
+  case 0x5F:
+    Bit(AF.high, 3);
+    break;
+  case 0x60:
+    Bit(BC.high, 4);
+    break;
+  case 0x61:
+    Bit(BC.low, 4);
+    break;
+  case 0x62:
+    Bit(DE.high, 4);
+    break;
+  case 0x63:
+    Bit(DE.low, 4);
+    break;
+  case 0x64:
+    Bit(HL.high, 4);
+    break;
+  case 0x65:
+    Bit(HL.low, 4);
+    break;
+  case 0x66:
+    Bit(_mmu.Read(HL.reg), 4);
+    break;
+  case 0x67:
+    Bit(AF.high, 4);
+    break;
+  case 0x68:
+    Bit(BC.high, 5);
+    break;
+  case 0x69:
+    Bit(BC.low, 5);
+    break;
+  case 0x6A:
+    Bit(DE.high, 5);
+    break;
+  case 0x6B:
+    Bit(DE.low, 5);
+    break;
+  case 0x6C:
+    Bit(HL.high, 5);
+    break;
+  case 0x6D:
+    Bit(HL.low, 5);
+    break;
+  case 0x6E:
+    Bit(_mmu.Read(HL.reg), 5);
+    break;
+  case 0x6F:
+    Bit(AF.high, 5);
+    break;
+  case 0x70:
+    Bit(BC.high, 6);
+    break;
+  case 0x71:
+    Bit(BC.low, 6);
+    break;
+  case 0x72:
+    Bit(DE.high, 6);
+    break;
+  case 0x73:
+    Bit(DE.low, 6);
+    break;
+  case 0x74:
+    Bit(HL.high, 6);
+    break;
+  case 0x75:
+    Bit(HL.low, 6);
+    break;
+  case 0x76:
+    Bit(_mmu.Read(HL.reg), 6);
+    break;
+  case 0x77:
+    Bit(AF.high, 6);
+    break;
+  case 0x78:
+    Bit(BC.high, 7);
+    break;
+  case 0x79:
+    Bit(BC.low, 7);
+    break;
+  case 0x7A:
+    Bit(DE.high, 7);
+    break;
+  case 0x7B:
+    Bit(DE.low, 7);
     break;
   case 0x7C:
-    BitBR(7U, HL.high);
+    Bit(HL.high, 7);
+    break;
+  case 0x7D:
+    Bit(HL.low, 7);
+    break;
+  case 0x7E:
+    Bit(_mmu.Read(HL.reg), 7);
+    break;
+  case 0x7F:
+    Bit(AF.high, 7);
+    break;
+  case 0x80:
+    Res(BC.high, 0);
+    break;
+  case 0x81:
+    Res(BC.low, 0);
+    break;
+  case 0x82:
+    Res(DE.high, 0);
+    break;
+  case 0x83:
+    Res(DE.low, 0);
+    break;
+  case 0x84:
+    Res(HL.high, 0);
+    break;
+  case 0x85:
+    Res(HL.low, 0);
+    break;
+  case 0x86:
+    Res(_mmu.Address(HL.reg), 0);
+    break;
+  case 0x87:
+    Res(AF.high, 0);
+    break;
+  case 0x88:
+    Res(BC.high, 1);
+    break;
+  case 0x89:
+    Res(BC.low, 1);
+    break;
+  case 0x8A:
+    Res(DE.high, 1);
+    break;
+  case 0x8B:
+    Res(DE.low, 1);
+    break;
+  case 0x8C:
+    Res(HL.high, 1);
+    break;
+  case 0x8D:
+    Res(HL.low, 1);
+    break;
+  case 0x8E:
+    Res(_mmu.Address(HL.reg), 1);
+    break;
+  case 0x8F:
+    Res(AF.high, 1);
+    break;
+  case 0x90:
+    Res(BC.high, 2);
+    break;
+  case 0x91:
+    Res(BC.low, 2);
+    break;
+  case 0x92:
+    Res(DE.high, 2);
+    break;
+  case 0x93:
+    Res(DE.low, 2);
+    break;
+  case 0x94:
+    Res(HL.high, 2);
+    break;
+  case 0x95:
+    Res(HL.low, 2);
+    break;
+  case 0x96:
+    Res(_mmu.Address(HL.reg), 2);
+    break;
+  case 0x97:
+    Res(AF.high, 2);
+    break;
+  case 0x98:
+    Res(BC.high, 3);
+    break;
+  case 0x99:
+    Res(BC.low, 3);
+    break;
+  case 0x9A:
+    Res(DE.high, 3);
+    break;
+  case 0x9B:
+    Res(DE.low, 3);
+    break;
+  case 0x9C:
+    Res(HL.high, 3);
+    break;
+  case 0x9D:
+    Res(HL.low, 3);
+    break;
+  case 0x9E:
+    Res(_mmu.Address(HL.reg), 3);
+    break;
+  case 0x9F:
+    Res(AF.high, 3);
+    break;
+  case 0xA0:
+    Res(BC.high, 4);
+    break;
+  case 0xA1:
+    Res(BC.low, 4);
+    break;
+  case 0xA2:
+    Res(DE.high, 4);
+    break;
+  case 0xA3:
+    Res(DE.low, 4);
+    break;
+  case 0xA4:
+    Res(HL.high, 4);
+    break;
+  case 0xA5:
+    Res(HL.low, 4);
+    break;
+  case 0xA6:
+    Res(_mmu.Address(HL.reg), 4);
+    break;
+  case 0xA7:
+    Res(AF.high, 4);
+    break;
+  case 0xA8:
+    Res(BC.high, 5);
+    break;
+  case 0xA9:
+    Res(BC.low, 5);
+    break;
+  case 0xAA:
+    Res(DE.high, 5);
+    break;
+  case 0xAB:
+    Res(DE.low, 5);
+    break;
+  case 0xAC:
+    Res(HL.high, 5);
+    break;
+  case 0xAD:
+    Res(HL.low, 5);
+    break;
+  case 0xAE:
+    Res(_mmu.Address(HL.reg), 5);
+    break;
+  case 0xAF:
+    Res(AF.high, 5);
+    break;
+  case 0xB0:
+    Res(BC.high, 6);
+    break;
+  case 0xB1:
+    Res(BC.low, 6);
+    break;
+  case 0xB2:
+    Res(DE.high, 6);
+    break;
+  case 0xB3:
+    Res(DE.low, 6);
+    break;
+  case 0xB4:
+    Res(HL.high, 6);
+    break;
+  case 0xB5:
+    Res(HL.low, 6);
+    break;
+  case 0xB6:
+    Res(_mmu.Address(HL.reg), 6);
+    break;
+  case 0xB7:
+    Res(AF.high, 6);
+    break;
+  case 0xB8:
+    Res(BC.high, 7);
+    break;
+  case 0xB9:
+    Res(BC.low, 7);
+    break;
+  case 0xBA:
+    Res(DE.high, 7);
+    break;
+  case 0xBB:
+    Res(DE.low, 7);
+    break;
+  case 0xBC:
+    Res(HL.high, 7);
+    break;
+  case 0xBD:
+    Res(HL.low, 7);
+    break;
+  case 0xBE:
+    Res(_mmu.Address(HL.reg), 7);
+    break;
+  case 0xBF:
+    Res(AF.high, 7);
+    break;
+  case 0xC0:
+    Set(BC.high, 0);
+    break;
+  case 0xC1:
+    Set(BC.low, 0);
+    break;
+  case 0xC2:
+    Set(DE.high, 0);
+    break;
+  case 0xC3:
+    Set(DE.low, 0);
+    break;
+  case 0xC4:
+    Set(HL.high, 0);
+    break;
+  case 0xC5:
+    Set(HL.low, 0);
+    break;
+  case 0xC6:
+    Set(_mmu.Address(HL.reg), 0);
+    break;
+  case 0xC7:
+    Set(AF.high, 0);
+    break;
+  case 0xC8:
+    Set(BC.high, 1);
+    break;
+  case 0xC9:
+    Set(BC.low, 1);
+    break;
+  case 0xCA:
+    Set(DE.high, 1);
+    break;
+  case 0xCB:
+    Set(DE.low, 1);
+    break;
+  case 0xCC:
+    Set(HL.high, 1);
+    break;
+  case 0xCD:
+    Set(HL.low, 1);
+    break;
+  case 0xCE:
+    Set(_mmu.Address(HL.reg), 1);
+    break;
+  case 0xCF:
+    Set(AF.high, 1);
+    break;
+  case 0xD0:
+    Set(BC.high, 2);
+    break;
+  case 0xD1:
+    Set(BC.low, 2);
+    break;
+  case 0xD2:
+    Set(DE.high, 2);
+    break;
+  case 0xD3:
+    Set(DE.low, 2);
+    break;
+  case 0xD4:
+    Set(HL.high, 2);
+    break;
+  case 0xD5:
+    Set(HL.low, 2);
+    break;
+  case 0xD6:
+    Set(_mmu.Address(HL.reg), 2);
+    break;
+  case 0xD7:
+    Set(AF.high, 2);
+    break;
+  case 0xD8:
+    Set(BC.high, 3);
+    break;
+  case 0xD9:
+    Set(BC.low, 3);
+    break;
+  case 0xDA:
+    Set(DE.high, 3);
+    break;
+  case 0xDB:
+    Set(DE.low, 3);
+    break;
+  case 0xDC:
+    Set(HL.high, 3);
+    break;
+  case 0xDD:
+    Set(HL.low, 3);
+    break;
+  case 0xDE:
+    Set(_mmu.Address(HL.reg), 3);
+    break;
+  case 0xDF:
+    Set(AF.high, 3);
+    break;
+  case 0xE0:
+    Set(BC.high, 4);
+    break;
+  case 0xE1:
+    Set(BC.low, 4);
+    break;
+  case 0xE2:
+    Set(DE.high, 4);
+    break;
+  case 0xE3:
+    Set(DE.low, 4);
+    break;
+  case 0xE4:
+    Set(HL.high, 4);
+    break;
+  case 0xE5:
+    Set(HL.low, 4);
+    break;
+  case 0xE6:
+    Set(_mmu.Address(HL.reg), 4);
+    break;
+  case 0xE7:
+    Set(AF.high, 4);
+    break;
+  case 0xE8:
+    Set(BC.high, 5);
+    break;
+  case 0xE9:
+    Set(BC.low, 5);
+    break;
+  case 0xEA:
+    Set(DE.high, 5);
+    break;
+  case 0xEB:
+    Set(DE.low, 5);
+    break;
+  case 0xEC:
+    Set(HL.high, 5);
+    break;
+  case 0xED:
+    Set(HL.low, 5);
+    break;
+  case 0xEE:
+    Set(_mmu.Address(HL.reg), 5);
+    break;
+  case 0xEF:
+    Set(AF.high, 5);
+    break;
+  case 0xF0:
+    Set(BC.high, 6);
+    break;
+  case 0xF1:
+    Set(BC.low, 6);
+    break;
+  case 0xF2:
+    Set(DE.high, 6);
+    break;
+  case 0xF3:
+    Set(DE.low, 6);
+    break;
+  case 0xF4:
+    Set(HL.high, 6);
+    break;
+  case 0xF5:
+    Set(HL.low, 6);
+    break;
+  case 0xF6:
+    Set(_mmu.Address(HL.reg), 6);
+    break;
+  case 0xF7:
+    Set(AF.high, 6);
+    break;
+  case 0xF8:
+    Set(BC.high, 7);
+    break;
+  case 0xF9:
+    Set(BC.low, 7);
+    break;
+  case 0xFA:
+    Set(DE.high, 7);
+    break;
+  case 0xFB:
+    Set(DE.low, 7);
+    break;
+  case 0xFC:
+    Set(HL.high, 7);
+    break;
+  case 0xFD:
+    Set(HL.low, 7);
+    break;
+  case 0xFE:
+    Set(_mmu.Address(HL.reg), 7);
+    break;
+  case 0xFF:
+    Set(AF.high, 7);
     break;
   default:
     throw std::runtime_error(std::format(
@@ -882,6 +1646,20 @@ void Cpu::DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType)
     PC.reg = JOYPAD_INTERRUPT_HANDLER_ADDRESS;
     break;
   }
+}
+
+// opcodes
+
+void Cpu::DecHl()
+{
+  uint8_t data = _mmu.Read(HL.reg);
+  uint16_t res = data - 1;
+
+  SetZ((res & 0xFFU) == 0);
+  SetN(true);
+  SetH(((data & 0x0FU) - 1U) > 0x0F);
+
+  _mmu.Write(HL.reg, (res & 0xFFU));
 }
 
 void Cpu::LdAU16()
@@ -1119,8 +1897,6 @@ void Cpu::CpIHl()
   SetCY(res > 0xFFU);
 }
 
-// opcodes
-
 void Cpu::SubIHl()
 {
   uint8_t u8 = _mmu.Read(HL.reg);
@@ -1292,7 +2068,8 @@ void Cpu::Rra()
 
 void Cpu::Stop()
 {
-    throw std::runtime_error(std::format("Unimplemented instruction: 0x10 (STOP)"));
+  // TODO: check what needs to be done here
+  SPDLOG_WARN(std::format("Unimplemented instruction: 0x10 (STOP)"));
 }
 
 void Cpu::Rrca()
@@ -1628,6 +2405,126 @@ void Cpu::BitBR(unsigned int bit, std::uint8_t reg)
   SetN(false);
   SetH(true);
 }
+
+// extended opcodes
+// NOLINTBEGIN(readability-convert-member-functions-to-static)
+void Cpu::Rlc(uint8_t& reg)
+{
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  reg = reg << 1U;
+  reg = (reg & ~(1U << 0U)) | (bit7);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit7 == 1U);
+}
+
+void Cpu::Rrc(uint8_t& reg)
+{
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+  reg = (reg & ~(1U << 7U)) | (bit0 << 7U);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit0 == 1U);
+}
+
+void Cpu::Rl(uint8_t& reg)
+{
+  uint8_t oldCY = (AF.low & (1U << 4U)) >> 4U;
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  reg = reg << 1U;
+  reg = (reg & ~(1U << 0U)) | (oldCY);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit7 == 1U);
+}
+
+void Cpu::Rr(uint8_t& reg)
+{
+  uint8_t oldCY = (AF.low & (1U << 4U)) >> 4U;
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+  reg = (reg & ~(1U << 7U)) | (oldCY << 7U);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit0 == 1U);
+}
+
+void Cpu::Sla(uint8_t& reg)
+{
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  reg = reg << 1U;
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit7 == 1U);
+}
+
+void Cpu::Sra(uint8_t& reg)
+{
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+  reg = (reg & ~(1U << 7U)) | (bit7 << 7U);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit0 == 1U);
+}
+
+void Cpu::Srl(uint8_t& reg)
+{
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(bit0 == 1U);
+}
+
+void Cpu::Swap(uint8_t& reg)
+{
+  uint8_t lowerNibble = (reg & 0x0FU);
+  reg = reg >> 4U;
+  reg = (reg & (0x0FU)) | (lowerNibble << 4U);
+
+  SetZ(reg == 0);
+  SetN(false);
+  SetH(false);
+  SetCY(false);
+}
+
+
+void Cpu::Bit(uint8_t reg, uint8_t bit)
+{
+  uint8_t bitX = (reg & (1U << bit)) >> bit;
+  AF.low = (AF.low & ~(1U << 7U)) | ((!bitX) << 7U);
+  SetN(false);
+  SetH(true);
+}
+
+void Cpu::Res(uint8_t& reg, uint8_t bit)
+{
+  reg = (reg & ~(1U << bit));
+}
+
+void Cpu::Set(uint8_t& reg, uint8_t bit)
+{
+  reg = (reg & ~(1U << bit)) | (1U << bit);
+}
+
+// NOLINTEND(readability-convert-member-functions-to-static)
 
 // utility
 
