@@ -80,9 +80,9 @@ private:
   }
 
 private:
-  Fetcher _fetcher;
   MemoryManagementUnit &_mmu;
   Display &_display;
+  Fetcher _fetcher;
   std::deque<Fetcher::PixelFifoEntry> _bgWinFifo;
   unsigned int _pixelsDrawn{};
   unsigned int _pixelsToDrop{};

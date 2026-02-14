@@ -183,6 +183,8 @@ private:
           .x = screenX,
           .y = _ly,
           .color = colorId,
+          .palette = {},
+          .bgPriority = {}
       };
       _bgWinFifo.emplace_back(entry);
     }

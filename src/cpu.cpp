@@ -6,6 +6,8 @@
 #include <memory>
 
 // #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+// NOLINTBEGIN(readability-suspicious-call-argument, hicpp-signed-bitwise, readability-convert-member-functions-to-static)
+
 
 Cpu::Cpu(MemoryManagementUnit& mmu) : _mmu(mmu), _interrupt{std::make_shared<Interrupt>()}
 {
@@ -1677,7 +1679,7 @@ void Cpu::LdSpHl()
 void Cpu::LdHlS8()
 {
   auto i8 = static_cast<int8_t>(_mmu.Read(PC.reg++));
-  uint16_t res = SP.reg + i8;
+  uint16_t res = SP.reg + static_cast<std::uint16_t>(i8);
   SetZ(false);
   SetN(false);
   SetH(((SP.reg ^ i8 ^ res) & 0x10) != 0);
@@ -1719,7 +1721,7 @@ void Cpu::AndU8()
 void Cpu::AddSpS8()
 {
   auto i8 = static_cast<int8_t>(_mmu.Read(PC.reg++));
-  uint16_t res = SP.reg + i8;
+  uint16_t res = SP.reg + static_cast<std::uint16_t>(i8);
 
   SetZ(false);
   SetN(false);
@@ -2030,7 +2032,7 @@ void Cpu::Daa()
     if ((AF.low & (1U << 4U)) || AF.high > 0x99)
     {
       AF.high += 0x60;
-      AF.low = (AF.low & ~(1U << 4U) | (1U << 4U));
+      AF.low = ((AF.low & ~(1U << 4U)) | (1U << 4U));
     }
     if ((AF.low & (1U << 5U)) || (AF.high & 0x0FU) > 0x09)
     {
@@ -2407,7 +2409,6 @@ void Cpu::BitBR(unsigned int bit, std::uint8_t reg)
 }
 
 // extended opcodes
-// NOLINTBEGIN(readability-convert-member-functions-to-static)
 void Cpu::Rlc(uint8_t& reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
@@ -2524,8 +2525,6 @@ void Cpu::Set(uint8_t& reg, uint8_t bit)
   reg = (reg & ~(1U << bit)) | (1U << bit);
 }
 
-// NOLINTEND(readability-convert-member-functions-to-static)
-
 // utility
 
 // Set zero flag
@@ -2588,3 +2587,4 @@ std::uint16_t Cpu::ToU16(std::uint8_t lsb, std::uint8_t msb)
 {
   return static_cast<std::uint16_t>(msb << 8U) | lsb;
 }
+// NOLINTEND(readability-suspicious-call-argument, hicpp-signed-bitwise, readability-convert-member-functions-to-static)

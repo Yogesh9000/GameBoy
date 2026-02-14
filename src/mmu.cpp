@@ -32,7 +32,7 @@ std::uint8_t MemoryManagementUnit::Read(std::uint16_t addr) const
   }
 
   // return garbage value if no memory range found that contains addr
-  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}\n", addr);
+  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}", addr);
   return 0xFF;
 }
 
