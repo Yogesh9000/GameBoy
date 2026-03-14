@@ -5,10 +5,24 @@
 #include "interrupt.hpp"
 #include <memory>
 
+struct CpuState
+{
+  Register AF{};
+  Register BC{};
+  Register DE{};
+  Register HL{};
+  Register SP{};
+  Register PC{};
+  std::shared_ptr<Interrupt> _interrupt;
+};
+
 class Cpu
 {
 public:
   explicit Cpu(MemoryManagementUnit& mmu);
+  Cpu(CpuState state, MemoryManagementUnit& mmu);
+
+  [[nodiscard]] CpuState GetCpuState() const;
 
   void Tick();
 
@@ -144,15 +158,7 @@ private:
 
   static std::uint16_t ToU16(std::uint8_t lsb, std::uint8_t msb) ;
 
-  // state
-  Register AF{};
-  Register BC{};
-  Register DE{};
-  Register HL{};
-  Register SP{};
-  Register PC{};
-
 private:
+  CpuState _state;
   MemoryManagementUnit _mmu;
-  std::shared_ptr<Interrupt> _interrupt;
 };
