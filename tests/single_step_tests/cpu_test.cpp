@@ -1,6 +1,401 @@
+#include "cpu.hpp"
+
 #include <gtest/gtest.h>
 
-TEST(SingleStepTest, CpuTest)
+#include <format>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+#include "concretememoryrange.hpp"
+#include "mmu.hpp"
+
+using json = nlohmann::json;
+
+static bool operator==(const CpuState& a, const CpuState& b)
 {
-  EXPECT_TRUE(true);
+  return a.AF.low == b.AF.low && a.AF.high == b.AF.high && a.BC.low == b.BC.low
+         && a.BC.high == b.BC.high && a.DE.low == b.DE.low
+         && a.DE.high == b.DE.high && a.HL.low == b.HL.low
+         && a.HL.high == b.HL.high && a.SP.reg == b.SP.reg
+         && a.PC.reg == b.PC.reg;
 }
+
+static std::ostream& operator<<(std::ostream& os, const CpuState& state)
+{
+  std::cout << std::format(
+      "{{A={:02X}, B={:02X}, C={:02X}, D={:02X}, E={:02X}, H={:02X}, L={:02X}, F={:02X}, SP={:02X}, PC={:04X}",
+      state.AF.high, state.BC.high, state.BC.low, state.DE.high, state.DE.low,
+      state.HL.high, state.HL.low, state.AF.low, state.SP.reg, state.PC.reg);
+  return os;
+}
+
+static CpuState CreateStateFromJson(const auto& cpuState)
+{
+  CpuState state{};
+  state.AF.low = cpuState["f"];
+  state.AF.high = cpuState["a"];
+  state.BC.low = cpuState["c"];
+  state.BC.high = cpuState["b"];
+  state.DE.low = cpuState["e"];
+  state.DE.high = cpuState["d"];
+  state.HL.low = cpuState["l"];
+  state.HL.high = cpuState["h"];
+  state.SP.reg = cpuState["sp"];
+  state.PC.reg = cpuState["pc"];
+  return state;
+}
+
+static CpuState CreateInitialStateFromJson(const auto& test)
+{
+  return CreateStateFromJson(test["initial"]);
+}
+
+static CpuState CreateFinalStateFromJson(const auto& test)
+{
+  return CreateStateFromJson(test["final"]);
+}
+
+static MemoryManagementUnit CreateAndInitializeBusFromJson(const auto& test)
+{
+  MemoryManagementUnit mmu{};
+  mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x10000, 0x00));
+
+  for (const auto& memState : test["ram"])
+  {
+    uint16_t loc = memState[0];
+    uint8_t data = memState[1];
+    mmu.Write(loc, data);
+  }
+  return mmu;
+}
+
+static void TestInstruction(int test_num)
+{
+  std::string filePath = std::format("v1/{:02x}.json", test_num);
+  std::ifstream file{filePath};
+  ASSERT_TRUE(file.is_open());
+  json tests = json::parse(file);
+  for (const auto& test : tests)
+  {
+    auto initialState = CreateInitialStateFromJson(test);
+    auto finalState = CreateFinalStateFromJson(test);
+    auto mmu = CreateAndInitializeBusFromJson(test["initial"]);
+    Cpu cpu{initialState, mmu};
+    cpu.Tick();
+    ASSERT_EQ(cpu.GetCpuState(), finalState)
+        << std::format("Test Name: {} [Final State does not match]",
+               static_cast<std::string>(test["name"]));
+    for (const auto& memState : test["final"]["ram"])
+    {
+      uint16_t loc = memState[0];
+      uint8_t data = memState[1];
+      ASSERT_EQ(mmu.Read(loc), data)
+          << std::format("Test Name: {} [Memory State Does not Match]",
+                 static_cast<std::string>(test["name"]));
+    }
+  }
+}
+
+#define TEST_DEF(n, x)       \
+  TEST(SingleStepTest, n##x) \
+  {                          \
+    TestInstruction(x);      \
+  }
+
+#define TEST_DEF_DISABLED(n, x)       \
+  TEST(SingleStepTest, DISABLED_##n##x) \
+  {                          \
+    TestInstruction(x);      \
+  }
+
+// .name = "LD" .len=1
+TEST_DEF(LOAD, 0x02);
+TEST_DEF(LOAD, 0x0a);
+TEST_DEF(LOAD, 0x12);
+TEST_DEF(LOAD, 0x1a);
+TEST_DEF(LOAD, 0x22);
+TEST_DEF(LOAD, 0x2a);
+TEST_DEF(LOAD, 0x32);
+TEST_DEF(LOAD, 0x3a);
+TEST_DEF(LOAD, 0x40);
+TEST_DEF(LOAD, 0x41);
+TEST_DEF(LOAD, 0x42);
+TEST_DEF(LOAD, 0x43);
+TEST_DEF(LOAD, 0x44);
+TEST_DEF(LOAD, 0x45);
+TEST_DEF(LOAD, 0x46);
+TEST_DEF(LOAD, 0x47);
+TEST_DEF(LOAD, 0x48);
+TEST_DEF(LOAD, 0x49);
+TEST_DEF(LOAD, 0x4a);
+TEST_DEF(LOAD, 0x4b);
+TEST_DEF(LOAD, 0x4c);
+TEST_DEF(LOAD, 0x4d);
+TEST_DEF(LOAD, 0x4e);
+TEST_DEF(LOAD, 0x4f);
+TEST_DEF(LOAD, 0x50);
+TEST_DEF(LOAD, 0x51);
+TEST_DEF(LOAD, 0x52);
+TEST_DEF(LOAD, 0x53);
+TEST_DEF(LOAD, 0x54);
+TEST_DEF(LOAD, 0x55);
+TEST_DEF(LOAD, 0x56);
+TEST_DEF(LOAD, 0x57);
+TEST_DEF(LOAD, 0x58);
+TEST_DEF(LOAD, 0x59);
+TEST_DEF(LOAD, 0x5a);
+TEST_DEF(LOAD, 0x5b);
+TEST_DEF(LOAD, 0x5c);
+TEST_DEF(LOAD, 0x5d);
+TEST_DEF(LOAD, 0x5e);
+TEST_DEF(LOAD, 0x5f);
+TEST_DEF(LOAD, 0x60);
+TEST_DEF(LOAD, 0x61);
+TEST_DEF(LOAD, 0x62);
+TEST_DEF(LOAD, 0x63);
+TEST_DEF(LOAD, 0x64);
+TEST_DEF(LOAD, 0x65);
+TEST_DEF(LOAD, 0x66);
+TEST_DEF(LOAD, 0x67);
+TEST_DEF(LOAD, 0x68);
+TEST_DEF(LOAD, 0x69);
+TEST_DEF(LOAD, 0x6a);
+TEST_DEF(LOAD, 0x6b);
+TEST_DEF(LOAD, 0x6c);
+TEST_DEF(LOAD, 0x6d);
+TEST_DEF(LOAD, 0x6e);
+TEST_DEF(LOAD, 0x6f);
+TEST_DEF(LOAD, 0x70);
+TEST_DEF(LOAD, 0x71);
+TEST_DEF(LOAD, 0x72);
+TEST_DEF(LOAD, 0x73);
+TEST_DEF(LOAD, 0x74);
+TEST_DEF(LOAD, 0x75);
+TEST_DEF(LOAD, 0x77);
+TEST_DEF(LOAD, 0x78);
+TEST_DEF(LOAD, 0x79);
+TEST_DEF(LOAD, 0x7a);
+TEST_DEF(LOAD, 0x7b);
+TEST_DEF(LOAD, 0x7c);
+TEST_DEF(LOAD, 0x7d);
+TEST_DEF(LOAD, 0x7e);
+TEST_DEF(LOAD, 0x7f);
+TEST_DEF(LOAD, 0xe2);
+TEST_DEF(LOAD, 0xf2);
+TEST_DEF(LOAD, 0xf9);
+
+// .name = "LD" .len=2
+TEST_DEF(LOAD, 0x06);
+TEST_DEF(LOAD, 0x16);
+TEST_DEF(LOAD, 0x26);
+TEST_DEF(LOAD, 0x36);
+TEST_DEF(LOAD, 0x0e);
+TEST_DEF(LOAD, 0x1e);
+TEST_DEF(LOAD, 0x2e);
+TEST_DEF(LOAD, 0x3e);
+TEST_DEF(LOAD, 0xe0);
+TEST_DEF(LOAD, 0xf0);
+TEST_DEF(LOAD, 0xf8);
+
+// .name = "LD" .len=3
+TEST_DEF(LOAD, 0x01);
+TEST_DEF(LOAD, 0x11);
+TEST_DEF(LOAD, 0x21);
+TEST_DEF(LOAD, 0x31);
+TEST_DEF(LOAD, 0x08);
+TEST_DEF(LOAD, 0xea);
+TEST_DEF(LOAD, 0xfa);
+
+// POP
+TEST_DEF(POP, 0xc1);
+TEST_DEF(POP, 0xd1);
+TEST_DEF(POP, 0xe1);
+TEST_DEF(POP, 0xf1);
+
+// POP
+TEST_DEF(PUSH, 0xc5);
+TEST_DEF(PUSH, 0xd5);
+TEST_DEF(PUSH, 0xe5);
+TEST_DEF(PUSH, 0xf5);
+
+// ADD
+TEST_DEF(ADD, 0x79);
+TEST_DEF(ADD, 0x81);
+TEST_DEF(ADD, 0x82);
+TEST_DEF(ADD, 0x83);
+TEST_DEF(ADD, 0x84);
+TEST_DEF(ADD, 0x85);
+TEST_DEF(ADD, 0x86);
+TEST_DEF(ADD, 0x87);
+TEST_DEF(ADD, 0x09);
+TEST_DEF(ADD, 0x19);
+TEST_DEF(ADD, 0x29);
+TEST_DEF(ADD, 0x39);
+TEST_DEF(ADD, 0xc6);
+TEST_DEF(ADD, 0xe8);
+
+// ADC
+TEST_DEF(ADC, 0x88);
+TEST_DEF(ADC, 0x89);
+TEST_DEF(ADC, 0x8a);
+TEST_DEF(ADC, 0x8b);
+TEST_DEF(ADC, 0x8c);
+TEST_DEF(ADC, 0x8d);
+TEST_DEF(ADC, 0x8e);
+TEST_DEF(ADC, 0x8f);
+TEST_DEF(ADC, 0xce);
+
+// SUB
+TEST_DEF(SUB, 0x90);
+TEST_DEF(SUB, 0x91);
+TEST_DEF(SUB, 0x92);
+TEST_DEF(SUB, 0x93);
+TEST_DEF(SUB, 0x94);
+TEST_DEF(SUB, 0x95);
+TEST_DEF(SUB, 0x96);
+TEST_DEF(SUB, 0x97);
+TEST_DEF(SUB, 0xd6);
+
+// SBC
+TEST_DEF(SBC, 0x98);
+TEST_DEF(SBC, 0x99);
+TEST_DEF(SBC, 0x9a);
+TEST_DEF(SBC, 0x9b);
+TEST_DEF(SBC, 0x9c);
+TEST_DEF(SBC, 0x9d);
+TEST_DEF(SBC, 0x9e);
+TEST_DEF(SBC, 0x9f);
+TEST_DEF(SBC, 0xde);
+
+// AND
+TEST_DEF(AND, 0xa0);
+TEST_DEF(AND, 0xa1);
+TEST_DEF(AND, 0xa2);
+TEST_DEF(AND, 0xa3);
+TEST_DEF(AND, 0xa4);
+TEST_DEF(AND, 0xa5);
+TEST_DEF(AND, 0xa6);
+TEST_DEF(AND, 0xa7);
+TEST_DEF(AND, 0xe6);
+
+// XOR
+TEST_DEF(XOR, 0xa8);
+TEST_DEF(XOR, 0xa9);
+TEST_DEF(XOR, 0xaa);
+TEST_DEF(XOR, 0xab);
+TEST_DEF(XOR, 0xac);
+TEST_DEF(XOR, 0xad);
+TEST_DEF(XOR, 0xae);
+TEST_DEF(XOR, 0xaf);
+TEST_DEF(XOR, 0xee);
+
+// OR
+TEST_DEF(OR, 0xb0);
+TEST_DEF(OR, 0xb1);
+TEST_DEF(OR, 0xb2);
+TEST_DEF(OR, 0xb3);
+TEST_DEF(OR, 0xb4);
+TEST_DEF(OR, 0xb5);
+TEST_DEF(OR, 0xb6);
+TEST_DEF(OR, 0xb7);
+TEST_DEF(OR, 0xf6);
+
+// CP
+TEST_DEF(CP, 0xb8);
+TEST_DEF(CP, 0xb9);
+TEST_DEF(CP, 0xba);
+TEST_DEF(CP, 0xbb);
+TEST_DEF(CP, 0xbc);
+TEST_DEF(CP, 0xbd);
+TEST_DEF(CP, 0xbe);
+TEST_DEF(CP, 0xbf);
+TEST_DEF(CP, 0xfe);
+
+// INC
+TEST_DEF(INC, 0x03);
+TEST_DEF(INC, 0x13);
+TEST_DEF(INC, 0x23);
+TEST_DEF(INC, 0x33);
+TEST_DEF(INC, 0x04);
+TEST_DEF(INC, 0x14);
+TEST_DEF(INC, 0x24);
+TEST_DEF(INC, 0x34);
+TEST_DEF(INC, 0x0c);
+TEST_DEF(INC, 0x1c);
+TEST_DEF(INC, 0x2c);
+TEST_DEF(INC, 0x3c);
+
+// DEC
+TEST_DEF(DEC, 0x05);
+TEST_DEF(DEC, 0x15);
+TEST_DEF(DEC, 0x25);
+TEST_DEF(DEC, 0x35);
+TEST_DEF(DEC, 0x0b);
+TEST_DEF(DEC, 0x1b);
+TEST_DEF(DEC, 0x2b);
+TEST_DEF(DEC, 0x3b);
+TEST_DEF(DEC, 0x0d);
+TEST_DEF(DEC, 0x1d);
+TEST_DEF(DEC, 0x2d);
+TEST_DEF(DEC, 0x3d);
+
+// MISC
+TEST_DEF(DAA, 0x27);
+TEST_DEF(CPL, 0x2f);
+TEST_DEF(SCF, 0x37);
+TEST_DEF(CCF, 0x3f);
+
+// JP
+TEST_DEF(JP, 0xc2);
+TEST_DEF(JP, 0xc3);
+TEST_DEF(JP, 0xca);
+TEST_DEF(JP, 0xd2);
+TEST_DEF(JP, 0xda);
+TEST_DEF(JP, 0xe9);
+
+// JR
+TEST_DEF(JR, 18);
+TEST_DEF(JR, 20);
+TEST_DEF(JR, 28);
+TEST_DEF(JR, 30);
+TEST_DEF(JR, 38);
+
+// CALL
+TEST_DEF(CALL, 0xc4);
+TEST_DEF(CALL, 0xcc);
+TEST_DEF(CALL, 0xcd);
+TEST_DEF(CALL, 0xd4);
+TEST_DEF(CALL, 0xdc);
+
+// RET
+TEST_DEF(RET, 0xc0);
+TEST_DEF(RET, 0xc8);
+TEST_DEF(RET, 0xc9);
+TEST_DEF(RET, 0xd0);
+TEST_DEF(RET, 0xd8);
+
+// RETI
+TEST_DEF(RETI, 0xd9);
+
+// RST
+TEST_DEF(RST, 0xc7);
+TEST_DEF(RST, 0xcf);
+TEST_DEF(RST, 0xd7);
+TEST_DEF(RST, 0xdf);
+TEST_DEF(RST, 0xe7);
+TEST_DEF(RST, 0xef);
+TEST_DEF(RST, 0xf7);
+TEST_DEF(RST, 0xff);
+
+// Rotate
+TEST_DEF(RLCA, 0x07);
+TEST_DEF(RRCA, 0x0f);
+TEST_DEF(RLA, 0x17);
+TEST_DEF(RRA, 0x1f);
+
+// Special
+TEST_DEF(NOP, 0x00);
+TEST_DEF_DISABLED(STOP, 0x10);
+TEST_DEF_DISABLED(HALT, 0x76);
+TEST_DEF(DI, 0xf3);
+TEST_DEF(EI, 0xfb);
