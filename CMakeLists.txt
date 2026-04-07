@@ -11,3 +11,5 @@ find_package(SDL3 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 add_subdirectory(src)
+enable_testing()
+add_subdirectory(tests)

@@ -5,3 +5,5 @@ CMakeToolchain
 [requires]
 sdl/3.2.20
 spdlog/1.16.0
+gtest/1.17.0
+nlohmann_json/3.12.0
