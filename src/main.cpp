@@ -62,6 +62,9 @@ int main(int argc, char **argv)
   std::shared_ptr<Ppu> ppu{std::make_shared<Ppu>(mmu, display)};
   mmu.AddMemoryRange(ppu);
 
+  // add oam
+  mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0xA0, 0xFE00));
+
   Cpu cpu(mmu);
 
   // game loop
