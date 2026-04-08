@@ -1684,7 +1684,7 @@ void Cpu::LdAU16()
 {
   uint8_t lsb = _mmu.Read(_state.PC.reg++);
   uint8_t msb = _mmu.Read(_state.PC.reg++);
-  _state.AF.high = _mmu.Read(ToU16(msb, lsb));
+  _state.AF.high = _mmu.Read(ToU16(lsb, msb));
 }
 
 void Cpu::LdSpHl()
@@ -1768,7 +1768,7 @@ void Cpu::RetI()
 {
   uint8_t lsb = _mmu.Read(_state.SP.reg++);
   uint8_t msb = _mmu.Read(_state.SP.reg++);
-  _state.PC.reg = ToU16(msb, lsb);
+  _state.PC.reg = ToU16(lsb, msb);
   _state._interrupt->_ime = true;
 }
 
@@ -2009,7 +2009,7 @@ void Cpu::Ccf()
 
 void Cpu::LdAHlN()
 {
-  _mmu.Write(_state.HL.reg, _state.AF.high);
+  _state.AF.high = _mmu.Read(_state.HL.reg);
   _state.HL.reg = _state.HL.reg - 1;
 }
 
@@ -2107,7 +2107,7 @@ void Cpu::LdDU16Sp()
 {
   uint8_t lsb = _mmu.Read(_state.PC.reg++);
   uint8_t msb = _mmu.Read(_state.PC.reg++);
-  uint16_t nn = ToU16(msb, lsb);
+  uint16_t nn = ToU16(lsb, msb);
   _mmu.Write(nn, _state.SP.low);
   ++nn;
   _mmu.Write(nn, _state.SP.high);
@@ -2186,10 +2186,10 @@ void Cpu::Di()
 
 void Cpu::JpCcU16(bool cc)
 {
+  auto lsb = _mmu.Read(_state.PC.reg++);
+  auto msb = _mmu.Read(_state.PC.reg++);
   if (cc)
   {
-    auto lsb = _mmu.Read(_state.PC.reg++);
-    auto msb = _mmu.Read(_state.PC.reg++);
     _state.PC.reg = ToU16(lsb, msb);
   }
 }
@@ -2304,11 +2304,11 @@ void Cpu::LdRR(std::uint8_t& reg1, std::uint8_t& reg2)
 
 void Cpu::CAllCcU16(bool cc)
 {
+  auto low = _mmu.Read(_state.PC.reg++);
+  auto high = _mmu.Read(_state.PC.reg++);
+
   if (cc)
   {
-    auto low = _mmu.Read(_state.PC.reg++);
-    auto high = _mmu.Read(_state.PC.reg++);
-
     --_state.SP.reg;
     _mmu.Write(_state.SP.reg, _state.PC.high);
     --_state.SP.reg;
