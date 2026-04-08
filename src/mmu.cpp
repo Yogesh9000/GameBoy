@@ -32,7 +32,11 @@ std::uint8_t MemoryManagementUnit::Read(std::uint16_t addr) const
   }
 
   // return garbage value if no memory range found that contains addr
-  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}", addr);
+  if (addr < 0xFEA0 || addr > 0xFEFF)
+  {
+    // only log for invalid access outside forbidden region (0xFEA0 - 0xFEFF)
+    SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}", addr);
+  }
   return 0xFF;
 }
 
@@ -45,7 +49,11 @@ void MemoryManagementUnit::Write(std::uint16_t addr, std::uint8_t data)
     memoryRange->get()->Write(addr, data);
     return;
   }
-  SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
+  if (addr < 0xFEA0 || addr > 0xFEFF)
+  {
+    // only log for invalid access outside forbidden region (0xFEA0 - 0xFEFF)
+    SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
+  }
 }
 
 std::uint8_t& MemoryManagementUnit::Address(std::uint16_t addr)
