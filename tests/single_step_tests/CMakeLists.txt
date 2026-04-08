@@ -1,6 +1,7 @@
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_executable(cpu_test cpu_test.cpp "${PROJECT_SOURCE_DIR}/src/cpu.cpp"
+add_executable(cpu_test cpu_test.cpp ../common/common.cpp
+                                     "${PROJECT_SOURCE_DIR}/src/cpu.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/mmu.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/interrupt.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/concretememoryrange.cpp")
