@@ -1,4 +1,6 @@
 #pragma once
+#include <spdlog/logger.h>
+#include <memory>
 #include "memoryrange.hpp"
 
 class Cpu;
@@ -37,5 +39,6 @@ private:
   // IF register: https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
   std::uint8_t _ie;
   std::uint8_t _if;
+  std::shared_ptr<spdlog::logger> _logger{};
 };
 

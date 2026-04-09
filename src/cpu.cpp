@@ -1,12 +1,12 @@
 #include "cpu.hpp"
 #include "bitutils.hpp"
 #include "common.hpp"
+#include "logmanager.hpp"
 #include <format>
 #include <spdlog/spdlog.h>
 #include <memory>
 #include <utility>
 
-// #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 // NOLINTBEGIN(readability-suspicious-call-argument, hicpp-signed-bitwise, readability-convert-member-functions-to-static)
 
 
@@ -14,6 +14,7 @@ Cpu::Cpu(MemoryManagementUnit& mmu) : _state{}, _mmu(mmu)
 {
   _state._interrupt = std::make_shared<Interrupt>();
   _mmu.AddMemoryRange(_state._interrupt);
+  _logger = LogManager::GetLogger("Cpu");
 }
 
 Cpu::Cpu(CpuState state, MemoryManagementUnit& mmu) : _state(std::move(state)), _mmu(mmu)
@@ -23,6 +24,7 @@ Cpu::Cpu(CpuState state, MemoryManagementUnit& mmu) : _state(std::move(state)), 
     _state._interrupt = std::make_shared<Interrupt>();
   }
   _mmu.AddMemoryRange(_state._interrupt);
+  _logger = LogManager::GetLogger("Cpu");
 }
 
 [[nodiscard]] CpuState Cpu::GetCpuState() const
@@ -34,12 +36,11 @@ Cpu::Cpu(CpuState state, MemoryManagementUnit& mmu) : _state(std::move(state)), 
 void Cpu::Tick()
 {
   auto opcode = _mmu.Read(_state.PC.reg++);
-#ifdef _DEBUG
+
   if (opcode != 0xCB)
   {
-    SPDLOG_TRACE("PC: {:#06X}, Trying to execute instruction {:#04X}\n", PC.reg - 1, opcode);
+    LOG_TRACE(_logger, "PC: {:#06X}, Trying to execute instruction {:#04X}", _state.PC.reg - 1, opcode);
   }
-#endif
 
   HandleInterruptsIfAny();
 
@@ -47,7 +48,7 @@ void Cpu::Tick()
   {
     _state._interrupt->_enableRequested = false;
     _state._interrupt->_ime = true;
-    SPDLOG_DEBUG("Interrupt enabled");
+    LOG_DEBUG(_logger, "Interrupt enabled");
   }
 
   switch (opcode)
@@ -800,7 +801,7 @@ void Cpu::TickExtended()
 {
   auto opcode = _mmu.Read(_state.PC.reg++);
 
-  SPDLOG_TRACE("[CB] PC: {:#06X}, Trying to execute instruction {:#02X}\n", PC.reg - 1, opcode);
+  LOG_TRACE(_logger, "[CB] PC: {:#06X}, Trying to execute instruction {:#02X}", _state.PC.reg - 1, opcode);
 
   switch (opcode)
   {
@@ -1589,31 +1590,31 @@ void Cpu::HandleInterruptsIfAny()
       // Check if VBlank interrupt is enabled and requested
       if (BitUtils::Test<InterruptType::VBLANK>(_state._interrupt->_ie) && BitUtils::Test<InterruptType::VBLANK>(_state._interrupt->_if))
       {
-        SPDLOG_DEBUG("VBlank interrupt is enabled and requested");
+        LOG_DEBUG(_logger, "VBlank interrupt is enabled and requested");
         DisableInterruptAndJumpToInterruptHandler(InterruptType::VBLANK);
       }
       // Check if LCD interrupt is enabled and requested
       else if (BitUtils::Test<InterruptType::LCD>(_state._interrupt->_ie) && BitUtils::Test<InterruptType::LCD>(_state._interrupt->_if))
       {
-        SPDLOG_DEBUG("LCD interrupt is enabled and requested");
+        LOG_DEBUG(_logger, "LCD interrupt is enabled and requested");
         DisableInterruptAndJumpToInterruptHandler(InterruptType::LCD);
       }
       // Check if Timer interrupt is enabled and requested
       else if (BitUtils::Test<InterruptType::TIMER>(_state._interrupt->_ie) && BitUtils::Test<InterruptType::TIMER>(_state._interrupt->_if))
       {
-        SPDLOG_DEBUG("Timer interrupt is enabled and requested");
+        LOG_DEBUG(_logger, "Timer interrupt is enabled and requested");
         DisableInterruptAndJumpToInterruptHandler(InterruptType::TIMER);
       }
       // Check if Serial interrupt is enabled and requested
       else if (BitUtils::Test<InterruptType::SERIAL>(_state._interrupt->_ie) && BitUtils::Test<InterruptType::SERIAL>(_state._interrupt->_if))
       {
-        SPDLOG_DEBUG("Serial interrupt is enabled and requested");
+        LOG_DEBUG(_logger, "Serial interrupt is enabled and requested");
         DisableInterruptAndJumpToInterruptHandler(InterruptType::SERIAL);
       }
       // Check if Joypad interrupt is enabled and requested
       else if (BitUtils::Test<InterruptType::JOYPAD>(_state._interrupt->_ie) && BitUtils::Test<InterruptType::JOYPAD>(_state._interrupt->_if))
       {
-        SPDLOG_DEBUG("Joypad interrupt is enabled and requested");
+        LOG_DEBUG(_logger, "Joypad interrupt is enabled and requested");
         DisableInterruptAndJumpToInterruptHandler(InterruptType::JOYPAD);
       }
     }
@@ -1623,9 +1624,9 @@ void Cpu::HandleInterruptsIfAny()
 // TODO: Check if I can Refactor this method
 void Cpu::DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType)
 {
-  SPDLOG_DEBUG("Disabling interrupt before jumping to interrupt handler");
+  LOG_DEBUG(_logger, "Disabling interrupt before jumping to interrupt handler");
   Di();
-  SPDLOG_DEBUG("Saving PC on stack before jumping to interrupt handler");
+  LOG_DEBUG(_logger, "Saving PC on stack before jumping to interrupt handler");
   _state.SP.reg--;
   _mmu.Write(_state.SP.reg, _state.PC.high);
   _state.SP.reg--;
@@ -1634,33 +1635,33 @@ void Cpu::DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType)
   switch (interruptType)
   {
   case InterruptType::VBLANK:
-    SPDLOG_DEBUG("Unset bit VBLANK (0) in Interrupt Flag register (IF: 0xFF0F)");
+    LOG_DEBUG(_logger, "Unset bit VBLANK (0) in Interrupt Flag register (IF: 0xFF0F)");
     BitUtils::Unset<InterruptType::VBLANK>(_state._interrupt->_if);
-    SPDLOG_DEBUG("Jumping to VBLANK interrupt handler");
+    LOG_DEBUG(_logger, "Jumping to VBLANK interrupt handler");
     _state.PC.reg = VBLANK_INTERRUPT_HANDLER_ADDRESS;
     break;
   case InterruptType::LCD:
-    SPDLOG_DEBUG("Unset bit LCD (1) in Interrupt Flag register (IF: 0xFF0F)");
+    LOG_DEBUG(_logger, "Unset bit LCD (1) in Interrupt Flag register (IF: 0xFF0F)");
     BitUtils::Unset<InterruptType::LCD>(_state._interrupt->_if);
-    SPDLOG_DEBUG("Jumping to LCD interrupt handler");
+    LOG_DEBUG(_logger, "Jumping to LCD interrupt handler");
     _state.PC.reg = STAT_INTERRUPT_HANDLER_ADDRESS;
     break;
   case InterruptType::TIMER:
-    SPDLOG_DEBUG("Unset bit TIMER (2) in Interrupt Flag register (IF: 0xFF0F)");
+    LOG_DEBUG(_logger, "Unset bit TIMER (2) in Interrupt Flag register (IF: 0xFF0F)");
     BitUtils::Unset<InterruptType::TIMER>(_state._interrupt->_if);
-    SPDLOG_DEBUG("Jumping to TIMER interrupt handler");
+    LOG_DEBUG(_logger, "Jumping to TIMER interrupt handler");
     _state.PC.reg = TIMER_INTERRUPT_HANDLER_ADDRESS;
     break;
   case InterruptType::SERIAL:
-    SPDLOG_DEBUG("Unset bit SERIAL (3) in Interrupt Flag register (IF: 0xFF0F)");
+    LOG_DEBUG(_logger, "Unset bit SERIAL (3) in Interrupt Flag register (IF: 0xFF0F)");
     BitUtils::Unset<InterruptType::SERIAL>(_state._interrupt->_if);
-    SPDLOG_DEBUG("Jumping to SERIAL interrupt handler");
+    LOG_DEBUG(_logger, "Jumping to SERIAL interrupt handler");
     _state.PC.reg = SERIAL_INTERRUPT_HANDLER_ADDRESS;
     break;
   case InterruptType::JOYPAD:
-    SPDLOG_DEBUG("Unset bit JOYPAD (4) in Interrupt Flag register (IF: 0xFF0F)");
+    LOG_DEBUG(_logger, "Unset bit JOYPAD (4) in Interrupt Flag register (IF: 0xFF0F)");
     BitUtils::Unset<InterruptType::JOYPAD>(_state._interrupt->_if);
-    SPDLOG_DEBUG("Jumping to JOYPAD interrupt handler");
+    LOG_DEBUG(_logger, "Jumping to JOYPAD interrupt handler");
     _state.PC.reg = JOYPAD_INTERRUPT_HANDLER_ADDRESS;
     break;
   }
@@ -2087,7 +2088,7 @@ void Cpu::Rra()
 void Cpu::Stop()
 {
   // TODO: check what needs to be done here
-  SPDLOG_WARN(std::format("Unimplemented instruction: 0x10 (STOP)"));
+  LOG_WARN(_logger, std::format("Unimplemented instruction: 0x10 (STOP)"));
 }
 
 void Cpu::Rrca()
@@ -2157,7 +2158,7 @@ void Cpu::LdRIHl(std::uint8_t& reg)
 void Cpu::Ei()
 {
   _state._interrupt->_enableRequested = true;
-  SPDLOG_DEBUG("Enable interrupt requested");
+  LOG_DEBUG(_logger, "Enable interrupt requested");
 }
 
 void Cpu::DecRr(Register& reg)
@@ -2181,7 +2182,7 @@ void Cpu::Di()
 {
   _state._interrupt->_enableRequested = false;
   _state._interrupt->_ime = false;
-  SPDLOG_DEBUG("Interrupt disabled");
+  LOG_DEBUG(_logger, "Interrupt disabled");
 }
 
 void Cpu::JpCcU16(bool cc)

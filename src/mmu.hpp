@@ -1,5 +1,6 @@
 #pragma once
 
+#include <spdlog/logger.h>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -14,6 +15,8 @@ private:
   auto GetMemoryRange(std::uint16_t addr);
 
 public:
+  MemoryManagementUnit();
+
   // TODO: try eliminate checking if a memory range is present in every method
 
   [[nodiscard]]
@@ -30,4 +33,5 @@ public:
 
 private:
   std::vector<std::shared_ptr<MemoryRange>> _memoryRanges;
+  std::shared_ptr<spdlog::logger> _logger{};
 };

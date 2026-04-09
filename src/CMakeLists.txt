@@ -16,6 +16,7 @@ add_executable(${PROJECT_NAME}
                    "filememoryrange.cpp"
                    "interrupt.hpp"
                    "interrupt.cpp"
+                   "logmanager.cpp"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
@@ -28,7 +29,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    $<$<CONFIG:Debug>:SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG>
-    $<$<CONFIG:Release>:SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_ERROR>
-)
+apply_logging_settings(${PROJECT_NAME})

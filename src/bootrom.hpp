@@ -1,5 +1,7 @@
 #pragma once
 
+#include <spdlog/logger.h>
+#include <memory>
 #include <string>
 
 #include "concretememoryrange.hpp"
@@ -21,4 +23,5 @@ public:
 private:
   static constexpr int BootRomOffset{0x00};
   bool _enabled{};
+  std::shared_ptr<spdlog::logger> _logger{};
 };

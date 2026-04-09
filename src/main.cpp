@@ -8,6 +8,7 @@
 #include "concretememoryrange.hpp"
 #include "filememoryrange.hpp"
 #include "cpu.hpp"
+#include "logmanager.hpp"
 #include "mmu.hpp"
 #include "ppu.hpp"
 #include "sdldisplay.hpp"
@@ -16,11 +17,12 @@
 
 int main(int argc, char **argv)
 {
-  spdlog::set_level(spdlog::level::debug);
+  LogManager::InitLogging(GB_LOG_LEVEL, "log.txt");
+  auto logger = LogManager::GetLogger("main");
   // early exit if no rom present
   if (argc != 3)
   {
-    SPDLOG_CRITICAL("No rom paths provided\n");
+    LOG_CRITICAL(logger, "No rom paths provided\n");
     return 1;
   }
 
@@ -86,7 +88,8 @@ int main(int argc, char **argv)
     }
   } catch (std::exception &ex)
   {
-    SPDLOG_CRITICAL("{}\n", ex.what());
+    LOG_CRITICAL(logger, "{}\n", ex.what());
   }
+  LogManager::ShutdownLogging();
   return 0;
 }

@@ -1,10 +1,12 @@
 #include "interrupt.hpp"
+#include "logmanager.hpp"
 #include "spdlog/spdlog.h"
 #include "common.hpp"
 
 Interrupt::Interrupt()
   : _ime{ false }, _enableRequested{ false }, _ie{ 0 }, _if{ 0 }
 {
+  _logger = LogManager::GetLogger("Interrupt");
 }
 
 [[nodiscard]]
@@ -25,7 +27,7 @@ std::uint8_t Interrupt::Read(std::uint16_t addr) const
     return _if;
   }
 
-  SPDLOG_TRACE("Trying to read invalid address: {}, returning 0xFF", addr);
+  LOG_TRACE(_logger, "Trying to read invalid address: {}, returning 0xFF", addr);
   return 0xFF;
 }
 
@@ -41,7 +43,7 @@ void Interrupt::Write(std::uint16_t addr, std::uint8_t data)
     _if = data;
     return;
   }
-  SPDLOG_TRACE("Ignoring write to invalid address: {}", addr);
+  LOG_TRACE(_logger, "Ignoring write to invalid address: {}", addr);
 }
 
 std::uint8_t& Interrupt::Address(std::uint16_t addr)
@@ -57,7 +59,7 @@ std::uint8_t& Interrupt::Address(std::uint16_t addr)
   }
 
   // if address is not presesnt, return dummy value
-  SPDLOG_TRACE("Trying to read invalid address: {}, returning 0xFF", addr);
+  LOG_TRACE(_logger, "Trying to read invalid address: {}, returning 0xFF", addr);
   static std::uint8_t dummy;
   dummy = 0xFF;
   return dummy;

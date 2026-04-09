@@ -1,5 +1,6 @@
 #pragma once
 
+#include <spdlog/logger.h>
 #include "mmu.hpp"
 #include "register.hpp"
 #include "interrupt.hpp"
@@ -161,4 +162,5 @@ private:
 private:
   CpuState _state;
   MemoryManagementUnit _mmu;
+  std::shared_ptr<spdlog::logger> _logger{};
 };

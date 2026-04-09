@@ -7,10 +7,12 @@
 #include <spdlog/spdlog.h>
 
 #include "common.hpp"
+#include "logmanager.hpp"
 
 BootRom::BootRom()
   : _enabled{true}
 {
+  _logger = LogManager::GetLogger("BootRom");
 }
 
 bool BootRom::Contains(std::uint16_t addr) const
@@ -23,12 +25,12 @@ void BootRom::Write(std::uint16_t addr, std::uint8_t data)
   // BootRom writes to address 0xFF50 at the end to disable itself
   if (addr == BOOTROM_ENABLE_ADDRESS)
   {
-    SPDLOG_INFO("Detected Write to address: {:#04X}, Disabling BootRom", BOOTROM_ENABLE_ADDRESS);
+    LOG_INFO(_logger, "Detected Write to address: {:#04X}, Disabling BootRom", BOOTROM_ENABLE_ADDRESS);
     _enabled = false;
     return;
   }
   // writes to bootRom are ignored
-  SPDLOG_WARN("Ignoring write to BootRom address: {:#06X}, data: {:#04X}\n", addr, data);
+  LOG_WARN(_logger, "Ignoring write to BootRom address: {:#06X}, data: {:#04X}\n", addr, data);
 }
 
 void BootRom::Load(const std::string& filePath)

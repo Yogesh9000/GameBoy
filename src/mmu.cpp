@@ -1,7 +1,11 @@
 #include "mmu.hpp"
-#include <format>
-#include "common.hpp"
+#include "logmanager.hpp"
 #include <spdlog/spdlog.h>
+
+MemoryManagementUnit::MemoryManagementUnit()
+{
+  _logger = LogManager::GetLogger("Mmu");
+}
 
 auto MemoryManagementUnit::GetMemoryRange(std::uint16_t addr) const
 {
@@ -35,7 +39,7 @@ std::uint8_t MemoryManagementUnit::Read(std::uint16_t addr) const
   if (addr < 0xFEA0 || addr > 0xFEFF)
   {
     // only log for invalid access outside forbidden region (0xFEA0 - 0xFEFF)
-    SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}", addr);
+    LOG_WARN(_logger, "Read: No registered memory region found that contains address: " "{:#06X}", addr);
   }
   return 0xFF;
 }
@@ -52,7 +56,7 @@ void MemoryManagementUnit::Write(std::uint16_t addr, std::uint8_t data)
   if (addr < 0xFEA0 || addr > 0xFEFF)
   {
     // only log for invalid access outside forbidden region (0xFEA0 - 0xFEFF)
-    SPDLOG_WARN("Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
+    LOG_WARN(_logger, "Write(data: {:#04X}): No registered memory region found that contains address: {:#06X}", data, addr);
   }
 }
 
@@ -67,7 +71,7 @@ std::uint8_t& MemoryManagementUnit::Address(std::uint16_t addr)
   }
 
   // return garbage value if no memory range found that contains addr
-  SPDLOG_WARN("Read: No registered memory region found that contains address: " "{:#06X}\n", addr);
+  LOG_WARN(_logger, "Read: No registered memory region found that contains address: " "{:#06X}\n", addr);
   static std::uint8_t dummy;
   dummy = 0xFF;
   return dummy;
