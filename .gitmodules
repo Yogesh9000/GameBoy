@@ -1,3 +1,6 @@
 [submodule "tests/data/single_step_tests"]
 	path = tests/data/single_step_tests
 	url = https://github.com/singleStepTests/sm83.git
+[submodule "tests/data/blarggs"]
+	path = tests/data/blarggs
+	url = https://github.com/retrio/gb-test-roms.git
