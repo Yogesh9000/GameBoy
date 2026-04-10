@@ -2,7 +2,7 @@
 
 #include <spdlog/details/registry.h>
 #include <spdlog/logger.h>
-#include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
@@ -36,9 +36,8 @@ void InitLogging(const std::string& level_str, const std::string& log_file)
 
   if (!log_file.empty())
   {
-    // Rotating: 5 MB max, keep 3 files
-    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-        log_file, 1024 * 1024 * 5, 3);
+    auto file_sink =
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>(log_file, true);
     file_sink->set_level(spdlog::level::trace);  // file always gets everything
     sinks.push_back(file_sink);
   }
