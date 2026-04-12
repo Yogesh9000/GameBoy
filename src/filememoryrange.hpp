@@ -1,9 +1,10 @@
 #pragma once
 
-#include "memoryrange.hpp"
-#include "concretememoryrange.hpp"
-#include <vector>
 #include <string>
+#include <vector>
+
+#include "concretememoryrange.hpp"
+#include "memoryrange.hpp"
 
 class FileMemoryRange : public MemoryRange
 {
@@ -18,9 +19,9 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
-  std::uint8_t& Address(std::uint16_t addr) override;
+  std::uint8_t &Address(std::uint16_t addr) override;
 
-  void Load(const std::string &filePath, int offset);
+  void Load(const std::string &filePath, std::size_t offset);
 
 private:
   std::vector<std::uint8_t> _memory;

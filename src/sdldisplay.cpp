@@ -1,10 +1,10 @@
 #include "sdldisplay.hpp"
 
 SdlDisplay::SdlDisplay(const char *title)
-    : _pixels(
-          static_cast<unsigned long>(PIXEL_SIZE * LCD_WIDTH * LCD_HEIGHT), 0),
-    _window(nullptr),
-    _renderer(nullptr)
+    : _window(nullptr),
+      _renderer(nullptr),
+      _pixels(
+          static_cast<unsigned long>(PIXEL_SIZE * LCD_WIDTH * LCD_HEIGHT), 0)
 {
   SDL_InitSubSystem(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title, LCD_WIDTH * SCALE, LCD_HEIGHT * SCALE,

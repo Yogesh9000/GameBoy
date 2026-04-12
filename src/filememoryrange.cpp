@@ -1,8 +1,9 @@
 #include "filememoryrange.hpp"
-#include <fstream>
-#include <format>
 
-void FileMemoryRange::Load(const std::string& filePath, int offset)
+#include <format>
+#include <fstream>
+
+void FileMemoryRange::Load(const std::string &filePath, std::size_t offset)
 {
   _offset = offset;
 
@@ -24,8 +25,7 @@ void FileMemoryRange::Load(const std::string& filePath, int offset)
   }
 }
 
-FileMemoryRange::FileMemoryRange()
-  : _memory{}, _offset{}
+FileMemoryRange::FileMemoryRange() : _memory{}, _offset{}
 {
 }
 
@@ -57,7 +57,7 @@ void FileMemoryRange::Write(std::uint16_t addr, std::uint8_t data)
   }
 }
 
-std::uint8_t& FileMemoryRange::Address(std::uint16_t addr)
+std::uint8_t &FileMemoryRange::Address(std::uint16_t addr)
 {
   // return data from memroy if memory range contains the address
   if (Contains(addr))
