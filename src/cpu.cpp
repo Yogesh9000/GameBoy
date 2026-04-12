@@ -13,14 +13,14 @@
 // NOLINTBEGIN(readability-suspicious-call-argument, hicpp-signed-bitwise,
 // readability-convert-member-functions-to-static)
 
-Cpu::Cpu(MemoryManagementUnit& mmu) : _state{}, _mmu(mmu)
+Cpu::Cpu(MemoryManagementUnit &mmu) : _state{}, _mmu(mmu)
 {
   _state._interrupt = std::make_shared<Interrupt>();
   _mmu.AddMemoryRange(_state._interrupt);
   _logger = LogManager::GetLogger("Cpu");
 }
 
-Cpu::Cpu(CpuState state, MemoryManagementUnit& mmu)
+Cpu::Cpu(CpuState state, MemoryManagementUnit &mmu)
     : _state(std::move(state)), _mmu(mmu)
 {
   if (!_state._interrupt)
@@ -2075,7 +2075,7 @@ void Cpu::Cpl()
   SetN(true);
   SetH(true);
 
-  _state.AF.high = ~_state.AF.high;
+  _state.AF.high = static_cast<std::uint8_t>(~_state.AF.high);
 }
 
 // DAA
@@ -2161,17 +2161,17 @@ void Cpu::Rlca()
   SetH(false);
   SetCY((_state.AF.high & (1U << 7U)) >> 7U);
 
-  _state.AF.high = _state.AF.high << 1U;
+  _state.AF.high = static_cast<std::uint8_t>(_state.AF.high << 1U);
   _state.AF.high =
       ((_state.AF.high & ~(1U << 0U)) | ((_state.AF.low & (1U << 4U)) >> 4U));
 }
 
-void Cpu::LdIRrA(Register& reg)
+void Cpu::LdIRrA(Register &reg)
 {
   _mmu.Write(reg.reg, _state.AF.high);
 }
 
-void Cpu::AddHlRr(Register& reg)
+void Cpu::AddHlRr(Register &reg)
 {
   uint32_t res =
       static_cast<uint32_t>(_state.HL.reg) + static_cast<uint32_t>(reg.reg);
@@ -2192,7 +2192,7 @@ void Cpu::RstU8(std::uint8_t addr)
   _state.PC.reg = ToU16(addr, 0x00);
 }
 
-void Cpu::LdRIHl(std::uint8_t& reg)
+void Cpu::LdRIHl(std::uint8_t &reg)
 {
   reg = _mmu.Read(_state.HL.reg);
 }
@@ -2203,7 +2203,7 @@ void Cpu::Ei()
   LOG_DEBUG(_logger, "Enable interrupt requested");
 }
 
-void Cpu::DecRr(Register& reg)
+void Cpu::DecRr(Register &reg)
 {
   reg.reg--;
 }
@@ -2304,7 +2304,7 @@ void Cpu::LdHlPA()
   ++_state.HL.reg;
 }
 
-void Cpu::DecR(std::uint8_t& reg)
+void Cpu::DecR(std::uint8_t &reg)
 {
   std::uint8_t res = reg - 1;
 
@@ -2315,7 +2315,7 @@ void Cpu::DecR(std::uint8_t& reg)
   reg = res;
 }
 
-void Cpu::PopRr(Register& reg)
+void Cpu::PopRr(Register &reg)
 {
   reg.low = _mmu.Read(_state.SP.reg);
   ++_state.SP.reg;
@@ -2333,10 +2333,10 @@ void Cpu::RlA()
   SetCY(((_state.AF.high & (1U << 7U)) >> 7U) == 1U);
 
   _state.AF.high = static_cast<uint8_t>(_state.AF.high << 1U);
-  _state.AF.high = static_cast<uint8_t>((_state.AF.high & ~(1U << 0U)) | oldCY);
+  _state.AF.high = (_state.AF.high & static_cast<uint8_t>(~(1U << 0U))) | oldCY;
 }
 
-void Cpu::PushRr(Register& reg)
+void Cpu::PushRr(Register &reg)
 {
   --_state.SP.reg;
   _mmu.Write(_state.SP.reg, reg.high);
@@ -2344,7 +2344,7 @@ void Cpu::PushRr(Register& reg)
   _mmu.Write(_state.SP.reg, reg.low);
 }
 
-void Cpu::LdRR(std::uint8_t& reg1, std::uint8_t& reg2)
+void Cpu::LdRR(std::uint8_t &reg1, std::uint8_t &reg2)
 {
   reg1 = reg2;
 }
@@ -2378,18 +2378,18 @@ void Cpu::RetCc(bool cc)
   }
 }
 
-void Cpu::LdRrU16(Register& reg)
+void Cpu::LdRrU16(Register &reg)
 {
   reg.low = _mmu.Read(_state.PC.reg++);
   reg.high = _mmu.Read(_state.PC.reg++);
 }
 
-void Cpu::LdRU8(std::uint8_t& reg)
+void Cpu::LdRU8(std::uint8_t &reg)
 {
   reg = _mmu.Read(_state.PC.reg++);
 }
 
-void Cpu::LdAIRr(Register& reg)
+void Cpu::LdAIRr(Register &reg)
 {
   _state.AF.high = _mmu.Read(reg.reg);
 }
@@ -2400,7 +2400,7 @@ void Cpu::LdHlMA()
   --_state.HL.reg;
 }
 
-void Cpu::LdIHlR(std::uint8_t& reg)
+void Cpu::LdIHlR(std::uint8_t &reg)
 {
   _mmu.Write(_state.HL.reg, reg);
 }
@@ -2433,7 +2433,7 @@ void Cpu::LdhU8A()
   _mmu.Write(addr, _state.AF.high);
 }
 
-void Cpu::IncR(std::uint8_t& reg)
+void Cpu::IncR(std::uint8_t &reg)
 {
   uint16_t res = reg + 1;
 
@@ -2444,18 +2444,18 @@ void Cpu::IncR(std::uint8_t& reg)
   reg = (res & 0xFFU);
 }
 
-void Cpu::IncRr(Register& reg)
+void Cpu::IncRr(Register &reg)
 {
   ++reg.reg;
 }
 
 // extended opcodes
-void Cpu::RlR(std::uint8_t& reg)
+void Cpu::RlR(std::uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit7 = (reg & (1U << 7U)) >> 7U;
   reg = static_cast<uint8_t>(reg << 1U);
-  reg = static_cast<std::uint8_t>((reg & ~(1U << 0U)) | oldCY);
+  reg = (reg & static_cast<std::uint8_t>(~(1U << 0U))) | oldCY;
 
   SetZ(reg == 0);
   SetN(false);
@@ -2465,17 +2465,17 @@ void Cpu::RlR(std::uint8_t& reg)
 
 void Cpu::BitBR(unsigned int bit, std::uint8_t reg)
 {
-  auto bitValue = static_cast<std::uint8_t>((reg & (1U << bit)) >> bit);
+  auto bitValue = (reg & static_cast<std::uint8_t>(1U << bit)) >> bit;
   SetZ(bitValue == 0);
   SetN(false);
   SetH(true);
 }
 
 // extended opcodes
-void Cpu::Rlc(uint8_t& reg)
+void Cpu::Rlc(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
-  reg = reg << 1U;
+  reg = static_cast<std::uint8_t>(reg << 1U);
   reg = (reg & ~(1U << 0U)) | (bit7);
 
   SetZ(reg == 0);
@@ -2484,11 +2484,12 @@ void Cpu::Rlc(uint8_t& reg)
   SetCY(bit7 == 1U);
 }
 
-void Cpu::Rrc(uint8_t& reg)
+void Cpu::Rrc(uint8_t &reg)
 {
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
-  reg = (reg & ~(1U << 7U)) | (bit0 << 7U);
+  reg = (reg & static_cast<std::uint8_t>(~(1U << 7U)))
+        | static_cast<std::uint8_t>(bit0 << 7U);
 
   SetZ(reg == 0);
   SetN(false);
@@ -2496,11 +2497,11 @@ void Cpu::Rrc(uint8_t& reg)
   SetCY(bit0 == 1U);
 }
 
-void Cpu::Rl(uint8_t& reg)
+void Cpu::Rl(uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit7 = (reg & 0x80U) >> 7U;
-  reg = reg << 1U;
+  reg = static_cast<std::uint8_t>(reg << 1U);
   reg = (reg & ~(1U << 0U)) | (oldCY);
 
   SetZ(reg == 0);
@@ -2509,12 +2510,13 @@ void Cpu::Rl(uint8_t& reg)
   SetCY(bit7 == 1U);
 }
 
-void Cpu::Rr(uint8_t& reg)
+void Cpu::Rr(uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
-  reg = (reg & ~(1U << 7U)) | (oldCY << 7U);
+  reg = (reg & static_cast<std::uint8_t>(~(1U << 7U)))
+        | static_cast<std::uint8_t>(oldCY << 7U);
 
   SetZ(reg == 0);
   SetN(false);
@@ -2522,10 +2524,10 @@ void Cpu::Rr(uint8_t& reg)
   SetCY(bit0 == 1U);
 }
 
-void Cpu::Sla(uint8_t& reg)
+void Cpu::Sla(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
-  reg = reg << 1U;
+  reg = static_cast<std::uint8_t>(reg << 1U);
 
   SetZ(reg == 0);
   SetN(false);
@@ -2533,12 +2535,13 @@ void Cpu::Sla(uint8_t& reg)
   SetCY(bit7 == 1U);
 }
 
-void Cpu::Sra(uint8_t& reg)
+void Cpu::Sra(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
-  reg = (reg & ~(1U << 7U)) | (bit7 << 7U);
+  reg = (reg & static_cast<std::uint8_t>(~(1U << 7U)))
+        | static_cast<std::uint8_t>(bit7 << 7U);
 
   SetZ(reg == 0);
   SetN(false);
@@ -2546,7 +2549,7 @@ void Cpu::Sra(uint8_t& reg)
   SetCY(bit0 == 1U);
 }
 
-void Cpu::Srl(uint8_t& reg)
+void Cpu::Srl(uint8_t &reg)
 {
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
@@ -2557,11 +2560,11 @@ void Cpu::Srl(uint8_t& reg)
   SetCY(bit0 == 1U);
 }
 
-void Cpu::Swap(uint8_t& reg)
+void Cpu::Swap(uint8_t &reg)
 {
   uint8_t lowerNibble = (reg & 0x0FU);
   reg = reg >> 4U;
-  reg = (reg & (0x0FU)) | (lowerNibble << 4U);
+  reg = (reg & (0x0FU)) | static_cast<std::uint8_t>((lowerNibble << 4U));
 
   SetZ(reg == 0);
   SetN(false);
@@ -2572,19 +2575,21 @@ void Cpu::Swap(uint8_t& reg)
 void Cpu::Bit(uint8_t reg, uint8_t bit)
 {
   uint8_t bitX = (reg & (1U << bit)) >> bit;
-  _state.AF.low = (_state.AF.low & ~(1U << 7U)) | ((!bitX) << 7U);
+  _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 7U)))
+                  | static_cast<std::uint8_t>(((!bitX) << 7U));
   SetN(false);
   SetH(true);
 }
 
-void Cpu::Res(uint8_t& reg, uint8_t bit)
+void Cpu::Res(uint8_t &reg, uint8_t bit)
 {
   reg = (reg & ~(1U << bit));
 }
 
-void Cpu::Set(uint8_t& reg, uint8_t bit)
+void Cpu::Set(uint8_t &reg, uint8_t bit)
 {
-  reg = (reg & ~(1U << bit)) | (1U << bit);
+  reg = (reg & static_cast<std::uint8_t>(~(1U << bit)))
+        | static_cast<std::uint8_t>((1U << bit));
 }
 
 // utility
@@ -2592,8 +2597,8 @@ void Cpu::Set(uint8_t& reg, uint8_t bit)
 // Set zero flag
 void Cpu::SetZ(bool value)
 {
-  _state.AF.low = static_cast<std::uint8_t>(
-      (_state.AF.low & ~(1U << 7U)) | static_cast<uint8_t>(value << 7U));
+  _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 7U)))
+                  | static_cast<uint8_t>(value << 7U);
 }
 
 // Get value of zero flag
@@ -2606,8 +2611,8 @@ bool Cpu::GetZ() const
 // Set negative flag
 void Cpu::SetN(bool value)
 {
-  _state.AF.low = static_cast<std::uint8_t>(
-      (_state.AF.low & ~(1U << 6U)) | static_cast<uint8_t>(value << 6U));
+  _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 6U)))
+                  | static_cast<uint8_t>(value << 6U);
 }
 
 // Get value of negative flag
@@ -2620,8 +2625,8 @@ bool Cpu::GetN() const
 // Set half carry flag
 void Cpu::SetH(bool value)
 {
-  _state.AF.low = static_cast<std::uint8_t>(
-      (_state.AF.low & ~(1U << 5U)) | static_cast<uint8_t>(value << 5U));
+  _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 5U)))
+                  | static_cast<uint8_t>(value << 5U);
 }
 
 // Get value of half carry flag
@@ -2634,8 +2639,8 @@ bool Cpu::GetH() const
 // Set carry flag
 void Cpu::SetCY(bool value)
 {
-  _state.AF.low = static_cast<std::uint8_t>(
-      (_state.AF.low & ~(1U << 4U)) | static_cast<uint8_t>(value << 4U));
+  _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 4U)))
+                  | static_cast<uint8_t>(value << 4U);
 }
 
 // Get value of carry flag
