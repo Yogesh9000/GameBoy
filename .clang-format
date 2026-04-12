@@ -1,0 +1,22 @@
+BasedOnStyle: Google
+AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: None
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterFunction: true
+  SplitEmptyFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterCaseLabel: true
+  BeforeCatch: true
+  BeforeElse: true
+AlignAfterOpenBracket: DontAlign
+BreakBeforeBinaryOperators: NonAssignment
+BreakAfterAttributes: Always
+BreakStringLiterals: false
+PointerAlignment: Right
+# ReflowCommentsStyle: IndentOnly
