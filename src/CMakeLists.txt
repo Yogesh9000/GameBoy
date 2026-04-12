@@ -23,7 +23,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
 target_compile_options(${PROJECT_NAME} PRIVATE
     # Common warnings for GCC and Clang
-    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wconversion -Wsign-conversion>
+    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wconversion -Wsign-conversion -Werror>
 
     # Common warnings for MSVC
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
