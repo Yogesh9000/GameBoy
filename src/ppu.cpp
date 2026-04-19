@@ -20,6 +20,14 @@ Ppu::Ppu(MemoryManagementUnit &mmu, Display &display)
   _phase->Start();
 }
 
+void Ppu::Tick(int cycles)
+{
+  while (cycles--)
+  {
+    Tick();
+  }
+}
+
 void Ppu::Tick()
 {
   ++_dotsThisLine;
@@ -135,7 +143,7 @@ void Ppu::Write(std::uint16_t addr, std::uint8_t data)
   }
 }
 
-std::uint8_t& Ppu::Address(std::uint16_t addr)
+std::uint8_t &Ppu::Address(std::uint16_t addr)
 {
   if (addr == LY_REGISTER_ADDRESS)
   {

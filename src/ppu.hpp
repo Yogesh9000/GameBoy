@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "concretememoryrange.hpp"
 #include "display.hpp"
 #include "mmu.hpp"
@@ -25,6 +26,7 @@ public:
   Ppu(MemoryManagementUnit &mmu, Display &display);
 
   void Tick();
+  void Tick(int cycles);
 
 public:
   [[nodiscard]]
@@ -35,7 +37,7 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
-  std::uint8_t& Address(std::uint16_t addr) override;
+  std::uint8_t &Address(std::uint16_t addr) override;
 
 private:
   ConcreteMemoryRange _oamRam;

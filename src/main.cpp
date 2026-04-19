@@ -6,13 +6,12 @@
 #include "bootrom.hpp"
 #include "common.hpp"
 #include "concretememoryrange.hpp"
-#include "filememoryrange.hpp"
 #include "cpu.hpp"
+#include "filememoryrange.hpp"
 #include "logmanager.hpp"
 #include "mmu.hpp"
 #include "ppu.hpp"
 #include "sdldisplay.hpp"
-
 #include "spdlog/spdlog.h"
 
 int main(int argc, char **argv)
@@ -40,8 +39,10 @@ int main(int argc, char **argv)
   rom->Load(romPath, 0x0);
   mmu.AddMemoryRange(rom);
 
-  // TODO: external ram comes from catridge, so we should not need to explicitly register the external ram here
-  //       This will probably be handled by Mappers for catridge when I implement one
+  // TODO: external ram comes from catridge, so we should not need to explicitly
+  // register the external ram here
+  //       This will probably be handled by Mappers for catridge when I
+  //       implement one
   // add external ram: 0xA000 - 0xBFFF
   mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x2000, 0xA000));
   // add work ram 1: 0xC000 - 0xCFFF
@@ -83,10 +84,11 @@ int main(int argc, char **argv)
           quit = true;
         }
       }
-      cpu.Tick();
-      ppu->Tick();
+      int cycles = cpu.Tick();
+      ppu->Tick(cycles);
     }
-  } catch (std::exception &ex)
+  }
+  catch (std::exception &ex)
   {
     LOG_CRITICAL(logger, "{}\n", ex.what());
   }
