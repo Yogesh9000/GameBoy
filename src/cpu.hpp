@@ -1,10 +1,12 @@
 #pragma once
 
 #include <spdlog/logger.h>
+
+#include <memory>
+
+#include "interrupt.hpp"
 #include "mmu.hpp"
 #include "register.hpp"
-#include "interrupt.hpp"
-#include <memory>
 
 struct CpuState
 {
@@ -20,144 +22,145 @@ struct CpuState
 class Cpu
 {
 public:
-  explicit Cpu(MemoryManagementUnit& mmu);
-  Cpu(CpuState state, MemoryManagementUnit& mmu);
+  explicit Cpu(MemoryManagementUnit &mmu);
+  Cpu(CpuState state, MemoryManagementUnit &mmu);
 
-  [[nodiscard]] CpuState GetCpuState() const;
+  [[nodiscard]]
+  CpuState GetCpuState() const;
 
-  void Tick();
+  int Tick();
 
 private:
-  void TickExtended();
+  int TickExtended();
 
   void HandleInterruptsIfAny();
   void DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType);
 
   // opcodes
-  void DecHl();
-  void LdAU16();
-  void LdSpHl();
-  void LdHlS8();
-  void OrU8();
-  void LdAC();
-  void AndU8();
-  void AddSpS8();
-  void JpHl();
-  void XorU8();
-  void RetI();
-  void SubU8();
-  void SbcU8();
-  void AddU8();
-  void AdcU8();
-  void AndR(std::uint8_t reg);
-  void AndIHl();
-  void XorR(std::uint8_t reg);
-  void XorIHl();
-  void OrR(std::uint8_t reg);
-  void OrIHl();
-  void CpR(std::uint8_t reg);
-  void CpIHl();
-  void SubIHl();
-  void SbcIHl();
-  void SbcR(std::uint8_t reg);
-  void AdcIHl();
-  void AddR(std::uint8_t reg);
-  void AdcR(std::uint8_t reg);
-  void Halt();
-  void Ccf();
-  void LdAHlN();
-  void Scf();
-  void IncIHl();
-  void Cpl();
-  void Daa();
-  void Rra();
-  void Stop();
-  void Rrca();
-  void LdDU16Sp();
-  void Rlca();
-  void LdIRrA(Register& reg);
-  void AddHlRr(Register& reg);
-  void RstU8(std::uint8_t addr);
-  void LdRIHl(std::uint8_t &reg);
-  void Ei();
-  void DecRr(Register& reg);
-  void LdAHlP();
-  void LdHlU8();
-  void Di();
-  void JpCcU16(bool c);
-  void Nop();
-  void SubR(std::uint8_t reg);
-  void AddAHl();
-  void LdU16A();
-  void CpU8();
-  void CpAHl() ;
-  void LdHlPA() ;
-  void DecR(std::uint8_t& reg) ;
-  void PopRr(Register& reg) ;
-  void RlA() ;
-  void PushRr(Register& reg) ;
-  void LdRR(std::uint8_t& reg1, std::uint8_t& reg2) ;
-  void CAllCcU16(bool c) ;
-  void RetCc(bool c) ;
-  void LdRrU16(Register& reg) ;
-  void LdRU8(std::uint8_t& reg) ;
-  void LdAIRr(Register& reg) ;
-  void LdHlMA() ;
-  void LdIHlR(std::uint8_t& reg) ;
-  void JrCCI8(bool cc) ;
-  void LdhAU8() ;
-  void LdhCA() ;
-  void LdhU8A() ;
-  void IncR(std::uint8_t& reg) ;
-  void IncRr(Register& reg) ;
+  int DecHl();
+  int LdAU16();
+  int LdSpHl();
+  int LdHlS8();
+  int OrU8();
+  int LdAC();
+  int AndU8();
+  int AddSpS8();
+  int JpHl();
+  int XorU8();
+  int RetI();
+  int SubU8();
+  int SbcU8();
+  int AddU8();
+  int AdcU8();
+  int AndR(std::uint8_t reg);
+  int AndIHl();
+  int XorR(std::uint8_t reg);
+  int XorIHl();
+  int OrR(std::uint8_t reg);
+  int OrIHl();
+  int CpR(std::uint8_t reg);
+  int CpIHl();
+  int SubIHl();
+  int SbcIHl();
+  int SbcR(std::uint8_t reg);
+  int AdcIHl();
+  int AddR(std::uint8_t reg);
+  int AdcR(std::uint8_t reg);
+  int Halt();
+  int Ccf();
+  int LdAHlN();
+  int Scf();
+  int IncIHl();
+  int Cpl();
+  int Daa();
+  int Rra();
+  int Stop();
+  int Rrca();
+  int LdDU16Sp();
+  int Rlca();
+  int LdIRrA(Register &reg);
+  int AddHlRr(Register &reg);
+  int RstU8(std::uint8_t addr);
+  int LdRIHl(std::uint8_t &reg);
+  int Ei();
+  int DecRr(Register &reg);
+  int LdAHlP();
+  int LdHlU8();
+  int Di();
+  int JpCcU16(bool c);
+  int Nop();
+  int SubR(std::uint8_t reg);
+  int AddAHl();
+  int LdU16A();
+  int CpU8();
+  int CpAHl();
+  int LdHlPA();
+  int DecR(std::uint8_t &reg);
+  int PopRr(Register &reg);
+  int RlA();
+  int PushRr(Register &reg);
+  int LdRR(std::uint8_t &reg1, std::uint8_t &reg2);
+  int CAllCcU16(bool c);
+  int RetCc(bool c);
+  int LdRrU16(Register &reg);
+  int LdRU8(std::uint8_t &reg);
+  int LdAIRr(Register &reg);
+  int LdHlMA();
+  int LdIHlR(std::uint8_t &reg);
+  int JrCCI8(bool cc);
+  int LdhAU8();
+  int LdhCA();
+  int LdhU8A();
+  int IncR(std::uint8_t &reg);
+  int IncRr(Register &reg);
 
   // extended opcodes
 
-  void Rlc(uint8_t& reg);
-  void RlR(std::uint8_t& reg) ;
-  void BitBR(unsigned int bit, std::uint8_t reg) ;
-  void Rrc(uint8_t& reg);
-  void Rl(uint8_t& reg);
-  void Rr(uint8_t& reg);
-  void Sla(uint8_t& reg);
-  void Sra(uint8_t& reg);
-  void Srl(uint8_t& reg);
-  void Swap(uint8_t& reg);
-  void Bit(uint8_t reg, uint8_t bit);
-  void Res(uint8_t& reg, uint8_t bit);
-  void Set(uint8_t& reg, uint8_t bit);
+  int Rlc(uint8_t &reg);
+  int RlR(std::uint8_t &reg);
+  int BitBR(unsigned int bit, std::uint8_t reg);
+  int Rrc(uint8_t &reg);
+  int Rl(uint8_t &reg);
+  int Rr(uint8_t &reg);
+  int Sla(uint8_t &reg);
+  int Sra(uint8_t &reg);
+  int Srl(uint8_t &reg);
+  int Swap(uint8_t &reg);
+  int Bit(uint8_t reg, uint8_t bit);
+  int Res(uint8_t &reg, uint8_t bit);
+  int Set(uint8_t &reg, uint8_t bit);
 
   // utility
 
   // Set zero flag
-  void SetZ(bool value) ;
+  void SetZ(bool value);
 
   // Get value of zero flag
   [[nodiscard]]
-  bool GetZ() const ;
+  bool GetZ() const;
 
   // Set negative flag
-  void SetN(bool value) ;
+  void SetN(bool value);
 
   // Get value of negative flag
   [[nodiscard]]
-  bool GetN() const ;
+  bool GetN() const;
 
   // Set half carry flag
-  void SetH(bool value) ;
+  void SetH(bool value);
 
   // Get value of half carry flag
   [[nodiscard]]
-  bool GetH() const ;
+  bool GetH() const;
 
   // Set carry flag
-  void SetCY(bool value) ;
+  void SetCY(bool value);
 
   // Get value of carry flag
   [[nodiscard]]
   bool GetCY() const;
 
-  static std::uint16_t ToU16(std::uint8_t lsb, std::uint8_t msb) ;
+  static std::uint16_t ToU16(std::uint8_t lsb, std::uint8_t msb);
 
 private:
   CpuState _state;

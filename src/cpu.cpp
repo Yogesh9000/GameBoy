@@ -38,7 +38,7 @@ CpuState Cpu::GetCpuState() const
 }
 
 // TODO: Implement HALT BUG
-void Cpu::Tick()
+int Cpu::Tick()
 {
   LOG_TRACE(_logger,
       "A:{:02X} F:{:02X} B:{:02X} C:{:02X} D:{:02X} E:{:02X} H:{:02X} L:{:02X} SP:{:04X} PC:{:04X} PCMEM:{:02X},{:02X},{:02X},{:02X}",
@@ -62,1529 +62,1034 @@ void Cpu::Tick()
   switch (opcode)
   {
     case 0x00:
-      Nop();
-      break;
+      return Nop();
     case 0x01:
-      LdRrU16(_state.BC);
-      break;
+      return LdRrU16(_state.BC);
     case 0x02:
-      LdIRrA(_state.BC);
-      break;
+      return LdIRrA(_state.BC);
     case 0x03:
-      IncRr(_state.BC);
-      break;
+      return IncRr(_state.BC);
     case 0x04:
-      IncR(_state.BC.high);
-      break;
+      return IncR(_state.BC.high);
     case 0x05:
-      DecR(_state.BC.high);
-      break;
+      return DecR(_state.BC.high);
     case 0x06:
-      LdRU8(_state.BC.high);
-      break;
+      return LdRU8(_state.BC.high);
     case 0x07:
-      Rlca();
-      break;
+      return Rlca();
     case 0x08:
-      LdDU16Sp();
-      break;
+      return LdDU16Sp();
     case 0x09:
-      AddHlRr(_state.BC);
-      break;
+      return AddHlRr(_state.BC);
     case 0x0A:
-      LdAIRr(_state.BC);
-      break;
+      return LdAIRr(_state.BC);
     case 0x0B:
-      DecRr(_state.BC);
-      break;
+      return DecRr(_state.BC);
     case 0x0C:
-      IncR(_state.BC.low);
-      break;
+      return IncR(_state.BC.low);
     case 0x0D:
-      DecR(_state.BC.low);
-      break;
+      return DecR(_state.BC.low);
     case 0x0E:
-      LdRU8(_state.BC.low);
-      break;
+      return LdRU8(_state.BC.low);
     case 0x0F:
-      Rrca();
-      break;
+      return Rrca();
     case 0x10:
-      Stop();
-      break;
+      return Stop();
     case 0x11:
-      LdRrU16(_state.DE);
-      break;
+      return LdRrU16(_state.DE);
     case 0x12:
-      LdIRrA(_state.DE);
-      break;
+      return LdIRrA(_state.DE);
     case 0x13:
-      IncRr(_state.DE);
-      break;
+      return IncRr(_state.DE);
     case 0x14:
-      IncR(_state.DE.high);
-      break;
+      return IncR(_state.DE.high);
     case 0x15:
-      DecR(_state.DE.high);
-      break;
+      return DecR(_state.DE.high);
     case 0x16:
-      LdRU8(_state.DE.high);
-      break;
+      return LdRU8(_state.DE.high);
     case 0x17:
-      RlA();
-      break;
+      return RlA();
     case 0x18:
-      JrCCI8(true);
-      break;
+      return JrCCI8(true);
     case 0x19:
-      AddHlRr(_state.DE);
-      break;
+      return AddHlRr(_state.DE);
     case 0x1A:
-      LdAIRr(_state.DE);
-      break;
+      return LdAIRr(_state.DE);
     case 0x1B:
-      DecRr(_state.DE);
-      break;
+      return DecRr(_state.DE);
     case 0x1C:
-      IncR(_state.DE.low);
-      break;
+      return IncR(_state.DE.low);
     case 0x1D:
-      DecR(_state.DE.low);
-      break;
+      return DecR(_state.DE.low);
     case 0x1E:
-      LdRU8(_state.DE.low);
-      break;
+      return LdRU8(_state.DE.low);
     case 0x1F:
-      Rra();
-      break;
+      return Rra();
     case 0x20:
-      JrCCI8(!GetZ());
-      break;
+      return JrCCI8(!GetZ());
     case 0x21:
-      LdRrU16(_state.HL);
-      break;
+      return LdRrU16(_state.HL);
     case 0x22:
-      LdHlPA();
-      break;
+      return LdHlPA();
     case 0x23:
-      IncRr(_state.HL);
-      break;
+      return IncRr(_state.HL);
     case 0x24:
-      IncR(_state.HL.high);
-      break;
+      return IncR(_state.HL.high);
     case 0x25:
-      DecR(_state.HL.high);
-      break;
+      return DecR(_state.HL.high);
     case 0x26:
-      LdRU8(_state.HL.high);
-      break;
+      return LdRU8(_state.HL.high);
     case 0x27:
-      Daa();
-      break;
+      return Daa();
     case 0x28:
-      JrCCI8(GetZ());
-      break;
+      return JrCCI8(GetZ());
     case 0x29:
-      AddHlRr(_state.HL);
-      break;
+      return AddHlRr(_state.HL);
     case 0x2A:
-      LdAHlP();
-      break;
+      return LdAHlP();
     case 0x2B:
-      DecRr(_state.HL);
-      break;
+      return DecRr(_state.HL);
     case 0x2C:
-      IncR(_state.HL.low);
-      break;
+      return IncR(_state.HL.low);
     case 0x2D:
-      DecR(_state.HL.low);
-      break;
+      return DecR(_state.HL.low);
     case 0x2E:
-      LdRU8(_state.HL.low);
-      break;
+      return LdRU8(_state.HL.low);
     case 0x2F:
-      Cpl();
-      break;
+      return Cpl();
     case 0x30:
-      JrCCI8(!GetCY());
-      break;
+      return JrCCI8(!GetCY());
     case 0x31:
-      LdRrU16(_state.SP);
-      break;
+      return LdRrU16(_state.SP);
     case 0x32:
-      LdHlMA();
-      break;
+      return LdHlMA();
     case 0x33:
-      IncRr(_state.SP);
-      break;
+      return IncRr(_state.SP);
     case 0x34:
-      IncIHl();
-      break;
+      return IncIHl();
     case 0x35:
-      DecHl();
-      break;
+      return DecHl();
     case 0x36:
-      LdHlU8();
-      break;
+      return LdHlU8();
     case 0x37:
-      Scf();
-      break;
+      return Scf();
     case 0x38:
-      JrCCI8(GetCY());
-      break;
+      return JrCCI8(GetCY());
     case 0x39:
-      AddHlRr(_state.SP);
-      break;
+      return AddHlRr(_state.SP);
     case 0x3A:
-      LdAHlN();
-      break;
+      return LdAHlN();
     case 0x3B:
-      DecRr(_state.SP);
-      break;
+      return DecRr(_state.SP);
     case 0x3C:
-      IncR(_state.AF.high);
-      break;
+      return IncR(_state.AF.high);
     case 0x3D:
-      DecR(_state.AF.high);
-      break;
+      return DecR(_state.AF.high);
     case 0x3E:
-      LdRU8(_state.AF.high);
-      break;
+      return LdRU8(_state.AF.high);
     case 0x3F:
-      Ccf();
-      break;
+      return Ccf();
     case 0x40:
-      LdRR(_state.BC.high, _state.BC.high);
-      break;
+      return LdRR(_state.BC.high, _state.BC.high);
     case 0x41:
-      LdRR(_state.BC.high, _state.BC.low);
-      break;
+      return LdRR(_state.BC.high, _state.BC.low);
     case 0x42:
-      LdRR(_state.BC.high, _state.DE.high);
-      break;
+      return LdRR(_state.BC.high, _state.DE.high);
     case 0x43:
-      LdRR(_state.BC.high, _state.DE.low);
-      break;
+      return LdRR(_state.BC.high, _state.DE.low);
     case 0x44:
-      LdRR(_state.BC.high, _state.HL.high);
-      break;
+      return LdRR(_state.BC.high, _state.HL.high);
     case 0x45:
-      LdRR(_state.BC.high, _state.HL.low);
-      break;
+      return LdRR(_state.BC.high, _state.HL.low);
     case 0x46:
-      LdRIHl(_state.BC.high);
-      break;
+      return LdRIHl(_state.BC.high);
     case 0x47:
-      LdRR(_state.BC.high, _state.AF.high);
-      break;
+      return LdRR(_state.BC.high, _state.AF.high);
     case 0x48:
-      LdRR(_state.BC.low, _state.BC.high);
-      break;
+      return LdRR(_state.BC.low, _state.BC.high);
     case 0x49:
-      LdRR(_state.BC.low, _state.BC.low);
-      break;
+      return LdRR(_state.BC.low, _state.BC.low);
     case 0x4A:
-      LdRR(_state.BC.low, _state.DE.high);
-      break;
+      return LdRR(_state.BC.low, _state.DE.high);
     case 0x4B:
-      LdRR(_state.BC.low, _state.DE.low);
-      break;
+      return LdRR(_state.BC.low, _state.DE.low);
     case 0x4C:
-      LdRR(_state.BC.low, _state.HL.high);
-      break;
+      return LdRR(_state.BC.low, _state.HL.high);
     case 0x4D:
-      LdRR(_state.BC.low, _state.HL.low);
-      break;
+      return LdRR(_state.BC.low, _state.HL.low);
     case 0x4E:
-      LdRIHl(_state.BC.low);
-      break;
+      return LdRIHl(_state.BC.low);
     case 0x4F:
-      LdRR(_state.BC.low, _state.AF.high);
-      break;
+      return LdRR(_state.BC.low, _state.AF.high);
     case 0x50:
-      LdRR(_state.DE.high, _state.BC.high);
-      break;
+      return LdRR(_state.DE.high, _state.BC.high);
     case 0x51:
-      LdRR(_state.DE.high, _state.BC.low);
-      break;
+      return LdRR(_state.DE.high, _state.BC.low);
     case 0x52:
-      LdRR(_state.DE.high, _state.DE.high);
-      break;
+      return LdRR(_state.DE.high, _state.DE.high);
     case 0x53:
-      LdRR(_state.DE.high, _state.DE.low);
-      break;
+      return LdRR(_state.DE.high, _state.DE.low);
     case 0x54:
-      LdRR(_state.DE.high, _state.HL.high);
-      break;
+      return LdRR(_state.DE.high, _state.HL.high);
     case 0x55:
-      LdRR(_state.DE.high, _state.HL.low);
-      break;
+      return LdRR(_state.DE.high, _state.HL.low);
     case 0x56:
-      LdRIHl(_state.DE.high);
-      break;
+      return LdRIHl(_state.DE.high);
     case 0x57:
-      LdRR(_state.DE.high, _state.AF.high);
-      break;
+      return LdRR(_state.DE.high, _state.AF.high);
     case 0x58:
-      LdRR(_state.DE.low, _state.BC.high);
-      break;
+      return LdRR(_state.DE.low, _state.BC.high);
     case 0x59:
-      LdRR(_state.DE.low, _state.BC.low);
-      break;
+      return LdRR(_state.DE.low, _state.BC.low);
     case 0x5A:
-      LdRR(_state.DE.low, _state.DE.high);
-      break;
+      return LdRR(_state.DE.low, _state.DE.high);
     case 0x5B:
-      LdRR(_state.DE.low, _state.DE.low);
-      break;
+      return LdRR(_state.DE.low, _state.DE.low);
     case 0x5C:
-      LdRR(_state.DE.low, _state.HL.high);
-      break;
+      return LdRR(_state.DE.low, _state.HL.high);
     case 0x5D:
-      LdRR(_state.DE.low, _state.HL.low);
-      break;
+      return LdRR(_state.DE.low, _state.HL.low);
     case 0x5E:
-      LdRIHl(_state.DE.low);
-      break;
+      return LdRIHl(_state.DE.low);
     case 0x5F:
-      LdRR(_state.DE.low, _state.AF.high);
-      break;
+      return LdRR(_state.DE.low, _state.AF.high);
     case 0x60:
-      LdRR(_state.HL.high, _state.BC.high);
-      break;
+      return LdRR(_state.HL.high, _state.BC.high);
     case 0x61:
-      LdRR(_state.HL.high, _state.BC.low);
-      break;
+      return LdRR(_state.HL.high, _state.BC.low);
     case 0x62:
-      LdRR(_state.HL.high, _state.DE.high);
-      break;
+      return LdRR(_state.HL.high, _state.DE.high);
     case 0x63:
-      LdRR(_state.HL.high, _state.DE.low);
-      break;
+      return LdRR(_state.HL.high, _state.DE.low);
     case 0x64:
-      LdRR(_state.HL.high, _state.HL.high);
-      break;
+      return LdRR(_state.HL.high, _state.HL.high);
     case 0x65:
-      LdRR(_state.HL.high, _state.HL.low);
-      break;
+      return LdRR(_state.HL.high, _state.HL.low);
     case 0x66:
-      LdRIHl(_state.HL.high);
-      break;
+      return LdRIHl(_state.HL.high);
     case 0x67:
-      LdRR(_state.HL.high, _state.AF.high);
-      break;
+      return LdRR(_state.HL.high, _state.AF.high);
     case 0x68:
-      LdRR(_state.HL.low, _state.BC.high);
-      break;
+      return LdRR(_state.HL.low, _state.BC.high);
     case 0x69:
-      LdRR(_state.HL.low, _state.BC.low);
-      break;
+      return LdRR(_state.HL.low, _state.BC.low);
     case 0x6A:
-      LdRR(_state.HL.low, _state.DE.high);
-      break;
+      return LdRR(_state.HL.low, _state.DE.high);
     case 0x6B:
-      LdRR(_state.HL.low, _state.DE.low);
-      break;
+      return LdRR(_state.HL.low, _state.DE.low);
     case 0x6C:
-      LdRR(_state.HL.low, _state.HL.high);
-      break;
+      return LdRR(_state.HL.low, _state.HL.high);
     case 0x6D:
-      LdRR(_state.HL.low, _state.HL.low);
-      break;
+      return LdRR(_state.HL.low, _state.HL.low);
     case 0x6E:
-      LdRIHl(_state.HL.low);
-      break;
+      return LdRIHl(_state.HL.low);
     case 0x6F:
-      LdRR(_state.HL.low, _state.AF.high);
-      break;
+      return LdRR(_state.HL.low, _state.AF.high);
     case 0x70:
-      LdIHlR(_state.BC.high);
-      break;
+      return LdIHlR(_state.BC.high);
     case 0x71:
-      LdIHlR(_state.BC.low);
-      break;
+      return LdIHlR(_state.BC.low);
     case 0x72:
-      LdIHlR(_state.DE.high);
-      break;
+      return LdIHlR(_state.DE.high);
     case 0x73:
-      LdIHlR(_state.DE.low);
-      break;
+      return LdIHlR(_state.DE.low);
     case 0x74:
-      LdIHlR(_state.HL.high);
-      break;
+      return LdIHlR(_state.HL.high);
     case 0x75:
-      LdIHlR(_state.HL.low);
-      break;
+      return LdIHlR(_state.HL.low);
     case 0x76:
-      Halt();
-      break;
+      return Halt();
     case 0x77:
-      LdIHlR(_state.AF.high);
-      break;
+      return LdIHlR(_state.AF.high);
     case 0x78:
-      LdRR(_state.AF.high, _state.BC.high);
-      break;
+      return LdRR(_state.AF.high, _state.BC.high);
     case 0x79:
-      LdRR(_state.AF.high, _state.BC.low);
-      break;
+      return LdRR(_state.AF.high, _state.BC.low);
     case 0x7A:
-      LdRR(_state.AF.high, _state.DE.high);
-      break;
+      return LdRR(_state.AF.high, _state.DE.high);
     case 0x7B:
-      LdRR(_state.AF.high, _state.DE.low);
-      break;
+      return LdRR(_state.AF.high, _state.DE.low);
     case 0x7C:
-      LdRR(_state.AF.high, _state.HL.high);
-      break;
+      return LdRR(_state.AF.high, _state.HL.high);
     case 0x7D:
-      LdRR(_state.AF.high, _state.HL.low);
-      break;
+      return LdRR(_state.AF.high, _state.HL.low);
     case 0x7E:
-      LdRIHl(_state.AF.high);
-      break;
+      return LdRIHl(_state.AF.high);
     case 0x7F:
-      LdRR(_state.AF.high, _state.AF.high);
-      break;
+      return LdRR(_state.AF.high, _state.AF.high);
     case 0x80:
-      AddR(_state.BC.high);
-      break;
+      return AddR(_state.BC.high);
     case 0x81:
-      AddR(_state.BC.low);
-      break;
+      return AddR(_state.BC.low);
     case 0x82:
-      AddR(_state.DE.high);
-      break;
+      return AddR(_state.DE.high);
     case 0x83:
-      AddR(_state.DE.low);
-      break;
+      return AddR(_state.DE.low);
     case 0x84:
-      AddR(_state.HL.high);
-      break;
+      return AddR(_state.HL.high);
     case 0x85:
-      AddR(_state.HL.low);
-      break;
+      return AddR(_state.HL.low);
     case 0x86:
-      AddAHl();
-      break;
+      return AddAHl();
     case 0x87:
-      AddR(_state.AF.high);
-      break;
+      return AddR(_state.AF.high);
     case 0x88:
-      AdcR(_state.BC.high);
-      break;
+      return AdcR(_state.BC.high);
     case 0x89:
-      AdcR(_state.BC.low);
-      break;
+      return AdcR(_state.BC.low);
     case 0x8A:
-      AdcR(_state.DE.high);
-      break;
+      return AdcR(_state.DE.high);
     case 0x8B:
-      AdcR(_state.DE.low);
-      break;
+      return AdcR(_state.DE.low);
     case 0x8C:
-      AdcR(_state.HL.high);
-      break;
+      return AdcR(_state.HL.high);
     case 0x8D:
-      AdcR(_state.HL.low);
-      break;
+      return AdcR(_state.HL.low);
     case 0x8E:
-      AdcIHl();
-      break;
+      return AdcIHl();
     case 0x8F:
-      AdcR(_state.AF.high);
-      break;
+      return AdcR(_state.AF.high);
     case 0x90:
-      SubR(_state.BC.high);
-      break;
+      return SubR(_state.BC.high);
     case 0x91:
-      SubR(_state.BC.low);
-      break;
+      return SubR(_state.BC.low);
     case 0x92:
-      SubR(_state.DE.high);
-      break;
+      return SubR(_state.DE.high);
     case 0x93:
-      SubR(_state.DE.low);
-      break;
+      return SubR(_state.DE.low);
     case 0x94:
-      SubR(_state.HL.high);
-      break;
+      return SubR(_state.HL.high);
     case 0x95:
-      SubR(_state.HL.low);
-      break;
+      return SubR(_state.HL.low);
     case 0x96:
-      SubIHl();
-      break;
+      return SubIHl();
     case 0x97:
-      SubR(_state.AF.high);
-      break;
+      return SubR(_state.AF.high);
     case 0x98:
-      SbcR(_state.BC.high);
-      break;
+      return SbcR(_state.BC.high);
     case 0x99:
-      SbcR(_state.BC.low);
-      break;
+      return SbcR(_state.BC.low);
     case 0x9A:
-      SbcR(_state.DE.high);
-      break;
+      return SbcR(_state.DE.high);
     case 0x9B:
-      SbcR(_state.DE.low);
-      break;
+      return SbcR(_state.DE.low);
     case 0x9C:
-      SbcR(_state.HL.high);
-      break;
+      return SbcR(_state.HL.high);
     case 0x9D:
-      SbcR(_state.HL.low);
-      break;
+      return SbcR(_state.HL.low);
     case 0x9E:
-      SbcIHl();
-      break;
+      return SbcIHl();
     case 0x9F:
-      SbcR(_state.AF.high);
-      break;
+      return SbcR(_state.AF.high);
     case 0xA0:
-      AndR(_state.BC.high);
-      break;
+      return AndR(_state.BC.high);
     case 0xA1:
-      AndR(_state.BC.low);
-      break;
+      return AndR(_state.BC.low);
     case 0xA2:
-      AndR(_state.DE.high);
-      break;
+      return AndR(_state.DE.high);
     case 0xA3:
-      AndR(_state.DE.low);
-      break;
+      return AndR(_state.DE.low);
     case 0xA4:
-      AndR(_state.HL.high);
-      break;
+      return AndR(_state.HL.high);
     case 0xA5:
-      AndR(_state.HL.low);
-      break;
+      return AndR(_state.HL.low);
     case 0xA6:
-      AndIHl();
-      break;
+      return AndIHl();
     case 0xA7:
-      AndR(_state.AF.high);
-      break;
+      return AndR(_state.AF.high);
     case 0xA8:
-      XorR(_state.BC.high);
-      break;
+      return XorR(_state.BC.high);
     case 0xA9:
-      XorR(_state.BC.low);
-      break;
+      return XorR(_state.BC.low);
     case 0xAA:
-      XorR(_state.DE.high);
-      break;
+      return XorR(_state.DE.high);
     case 0xAB:
-      XorR(_state.DE.low);
-      break;
+      return XorR(_state.DE.low);
     case 0xAC:
-      XorR(_state.HL.high);
-      break;
+      return XorR(_state.HL.high);
     case 0xAD:
-      XorR(_state.HL.low);
-      break;
+      return XorR(_state.HL.low);
     case 0xAE:
-      XorIHl();
-      break;
+      return XorIHl();
     case 0xAF:
-      XorR(_state.AF.high);
-      break;
+      return XorR(_state.AF.high);
     case 0xB0:
-      OrR(_state.BC.high);
-      break;
+      return OrR(_state.BC.high);
     case 0xB1:
-      OrR(_state.BC.low);
-      break;
+      return OrR(_state.BC.low);
     case 0xB2:
-      OrR(_state.DE.high);
-      break;
+      return OrR(_state.DE.high);
     case 0xB3:
-      OrR(_state.DE.low);
-      break;
+      return OrR(_state.DE.low);
     case 0xB4:
-      OrR(_state.HL.high);
-      break;
+      return OrR(_state.HL.high);
     case 0xB5:
-      OrR(_state.HL.low);
-      break;
+      return OrR(_state.HL.low);
     case 0xB6:
-      OrIHl();
-      break;
+      return OrIHl();
     case 0xB7:
-      OrR(_state.AF.high);
-      break;
+      return OrR(_state.AF.high);
     case 0xB8:
-      CpR(_state.BC.high);
-      break;
+      return CpR(_state.BC.high);
     case 0xB9:
-      CpR(_state.BC.low);
-      break;
+      return CpR(_state.BC.low);
     case 0xBA:
-      CpR(_state.DE.high);
-      break;
+      return CpR(_state.DE.high);
     case 0xBB:
-      CpR(_state.DE.low);
-      break;
+      return CpR(_state.DE.low);
     case 0xBC:
-      CpR(_state.HL.high);
-      break;
+      return CpR(_state.HL.high);
     case 0xBD:
-      CpR(_state.HL.low);
-      break;
+      return CpR(_state.HL.low);
     case 0xBE:
-      CpIHl();
-      break;
+      return CpIHl();
     case 0xBF:
-      CpR(_state.AF.high);
-      break;
+      return CpR(_state.AF.high);
     case 0xC0:
-      RetCc(!GetZ());
-      break;
+      return RetCc(!GetZ());
     case 0xC1:
-      PopRr(_state.BC);
-      break;
+      return PopRr(_state.BC);
     case 0xC2:
-      JpCcU16(!GetZ());
-      break;
+      return JpCcU16(!GetZ());
     case 0xC3:
-      JpCcU16(true);  // unconditional jump
-      break;
+      return JpCcU16(true);  // unconditional jump
     case 0xC4:
-      CAllCcU16(!GetZ());
-      break;
+      return CAllCcU16(!GetZ());
     case 0xC5:
-      PushRr(_state.BC);
-      break;
+      return PushRr(_state.BC);
     case 0xC6:
-      AddU8();
-      break;
+      return AddU8();
     case 0xC7:
-      RstU8(0x00);
-      break;
+      return RstU8(0x00);
     case 0xC8:
-      RetCc(GetZ());
-      break;
+      return RetCc(GetZ());
     case 0xC9:
+    {
       RetCc(true);  // unconditional return
-      break;
+      return 16;
+    }
     case 0xCA:
-      JpCcU16(GetZ());
-      break;
+      return JpCcU16(GetZ());
     case 0xCB:
-      TickExtended();
-      break;
+      return TickExtended();
     case 0xCC:
-      CAllCcU16(GetZ());
-      break;
+      return CAllCcU16(GetZ());
     case 0xCD:
-      CAllCcU16(true);  // unconditional call
-      break;
+      return CAllCcU16(true);  // unconditional call
     case 0xCE:
-      AdcU8();
-      break;
+      return AdcU8();
     case 0xCF:
-      RstU8(0x08);
-      break;
+      return RstU8(0x08);
     case 0xD0:
-      RetCc(!GetCY());
-      break;
+      return RetCc(!GetCY());
     case 0xD1:
-      PopRr(_state.DE);
-      break;
+      return PopRr(_state.DE);
     case 0xD2:
-      JpCcU16(!GetCY());
-      break;
+      return JpCcU16(!GetCY());
     case 0xD4:
-      CAllCcU16(!GetCY());
-      break;
+      return CAllCcU16(!GetCY());
     case 0xD5:
-      PushRr(_state.DE);
-      break;
+      return PushRr(_state.DE);
     case 0xD6:
-      SubU8();
-      break;
+      return SubU8();
     case 0xD7:
-      RstU8(0x10);
-      break;
+      return RstU8(0x10);
     case 0xD8:
-      RetCc(GetCY());
-      break;
+      return RetCc(GetCY());
     case 0xD9:
-      RetI();
-      break;
+      return RetI();
     case 0xDA:
-      JpCcU16(GetCY());
-      break;
+      return JpCcU16(GetCY());
     case 0xDC:
-      CAllCcU16(GetCY());
-      break;
+      return CAllCcU16(GetCY());
     case 0xDE:
-      SbcU8();
-      break;
+      return SbcU8();
     case 0xDF:
-      RstU8(0x18);
-      break;
+      return RstU8(0x18);
     case 0xE0:
-      LdhU8A();
-      break;
+      return LdhU8A();
     case 0xE1:
-      PopRr(_state.HL);
-      break;
+      return PopRr(_state.HL);
     case 0xE2:
-      LdhCA();
-      break;
+      return LdhCA();
     case 0xE5:
-      PushRr(_state.HL);
-      break;
+      return PushRr(_state.HL);
     case 0xE6:
-      AndU8();
-      break;
+      return AndU8();
     case 0xE7:
-      RstU8(0x20);
-      break;
+      return RstU8(0x20);
     case 0xE8:
-      AddSpS8();
-      break;
+      return AddSpS8();
     case 0xE9:
-      JpHl();
-      break;
+      return JpHl();
     case 0xEA:
-      LdU16A();
-      break;
+      return LdU16A();
     case 0xEE:
-      XorU8();
-      break;
+      return XorU8();
     case 0xEF:
-      RstU8(0x28);
-      break;
+      return RstU8(0x28);
     case 0xF0:
-      LdhAU8();
-      break;
+      return LdhAU8();
     case 0xF1:
     {
-      PopRr(_state.AF);
+      int cycles = PopRr(_state.AF);
       _state.AF.low &= 0xF0U;  // clear unused lower nibble
+      return cycles;
     }
-    break;
     case 0xF2:
-      LdAC();
-      break;
+      return LdAC();
     case 0xF3:
-      Di();
-      break;
+      return Di();
     case 0xF5:
-      PushRr(_state.AF);
-      break;
+      return PushRr(_state.AF);
     case 0xF6:
-      OrU8();
-      break;
+      return OrU8();
     case 0xF7:
-      RstU8(0x30);
-      break;
+      return RstU8(0x30);
     case 0xF8:
-      LdHlS8();
-      break;
+      return LdHlS8();
     case 0xF9:
-      LdSpHl();
-      break;
+      return LdSpHl();
     case 0xFA:
-      LdAU16();
-      break;
+      return LdAU16();
     case 0xFB:
-      Ei();
-      break;
+      return Ei();
     case 0xFE:
-      CpU8();
-      break;
+      return CpU8();
     case 0xFF:
-      RstU8(0x38U);
-      break;
+      return RstU8(0x38U);
     default:
       throw std::runtime_error(std::format(
           "PC: {:#06X}, failed to execute instruction \033[31m{:#04X}\033[0m",
           _state.PC.reg - 1, opcode));
   }
+  return 0x00;
 }
 
-void Cpu::TickExtended()
+int Cpu::TickExtended()
 {
   auto opcode = _mmu.Read(_state.PC.reg++);
 
   switch (opcode)
   {
     case 0x00:
-      Rlc(_state.BC.high);
-      break;
+      return Rlc(_state.BC.high);
     case 0x01:
-      Rlc(_state.BC.low);
-      break;
+      return Rlc(_state.BC.low);
     case 0x02:
-      Rlc(_state.DE.high);
-      break;
+      return Rlc(_state.DE.high);
     case 0x03:
-      Rlc(_state.DE.low);
-      break;
+      return Rlc(_state.DE.low);
     case 0x04:
-      Rlc(_state.HL.high);
-      break;
+      return Rlc(_state.HL.high);
     case 0x05:
-      Rlc(_state.HL.low);
-      break;
+      return Rlc(_state.HL.low);
     case 0x06:
-      Rlc(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Rlc(_mmu.Address(_state.HL.reg));
     case 0x07:
-      Rlc(_state.AF.high);
-      break;
+      return Rlc(_state.AF.high);
     case 0x08:
-      Rrc(_state.BC.high);
-      break;
+      return Rrc(_state.BC.high);
     case 0x09:
-      Rrc(_state.BC.low);
-      break;
+      return Rrc(_state.BC.low);
     case 0x0A:
-      Rrc(_state.DE.high);
-      break;
+      return Rrc(_state.DE.high);
     case 0x0B:
-      Rrc(_state.DE.low);
-      break;
+      return Rrc(_state.DE.low);
     case 0x0C:
-      Rrc(_state.HL.high);
-      break;
+      return Rrc(_state.HL.high);
     case 0x0D:
-      Rrc(_state.HL.low);
-      break;
+      return Rrc(_state.HL.low);
     case 0x0E:
-      Rrc(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Rrc(_mmu.Address(_state.HL.reg));
     case 0x0F:
-      Rrc(_state.AF.high);
-      break;
+      return Rrc(_state.AF.high);
     case 0x10:
-      Rl(_state.BC.high);
-      break;
+      return Rl(_state.BC.high);
     case 0x11:
-      Rl(_state.BC.low);
-      break;
+      return Rl(_state.BC.low);
     case 0x12:
-      Rl(_state.DE.high);
-      break;
+      return Rl(_state.DE.high);
     case 0x13:
-      Rl(_state.DE.low);
-      break;
+      return Rl(_state.DE.low);
     case 0x14:
-      Rl(_state.HL.high);
-      break;
+      return Rl(_state.HL.high);
     case 0x15:
-      Rl(_state.HL.low);
-      break;
+      return Rl(_state.HL.low);
     case 0x16:
-      Rl(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Rl(_mmu.Address(_state.HL.reg));
     case 0x17:
-      Rl(_state.AF.high);
-      break;
+      return Rl(_state.AF.high);
     case 0x18:
-      Rr(_state.BC.high);
-      break;
+      return Rr(_state.BC.high);
     case 0x19:
-      Rr(_state.BC.low);
-      break;
+      return Rr(_state.BC.low);
     case 0x1A:
-      Rr(_state.DE.high);
-      break;
+      return Rr(_state.DE.high);
     case 0x1B:
-      Rr(_state.DE.low);
-      break;
+      return Rr(_state.DE.low);
     case 0x1C:
-      Rr(_state.HL.high);
-      break;
+      return Rr(_state.HL.high);
     case 0x1D:
-      Rr(_state.HL.low);
-      break;
+      return Rr(_state.HL.low);
     case 0x1E:
-      Rr(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Rr(_mmu.Address(_state.HL.reg));
     case 0x1F:
-      Rr(_state.AF.high);
-      break;
+      return Rr(_state.AF.high);
     case 0x20:
-      Sla(_state.BC.high);
-      break;
+      return Sla(_state.BC.high);
     case 0x21:
-      Sla(_state.BC.low);
-      break;
+      return Sla(_state.BC.low);
     case 0x22:
-      Sla(_state.DE.high);
-      break;
+      return Sla(_state.DE.high);
     case 0x23:
-      Sla(_state.DE.low);
-      break;
+      return Sla(_state.DE.low);
     case 0x24:
-      Sla(_state.HL.high);
-      break;
+      return Sla(_state.HL.high);
     case 0x25:
-      Sla(_state.HL.low);
-      break;
+      return Sla(_state.HL.low);
     case 0x26:
-      Sla(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Sla(_mmu.Address(_state.HL.reg));
     case 0x27:
-      Sla(_state.AF.high);
-      break;
+      return Sla(_state.AF.high);
     case 0x28:
-      Sra(_state.BC.high);
-      break;
+      return Sra(_state.BC.high);
     case 0x29:
-      Sra(_state.BC.low);
-      break;
+      return Sra(_state.BC.low);
     case 0x2A:
-      Sra(_state.DE.high);
-      break;
+      return Sra(_state.DE.high);
     case 0x2B:
-      Sra(_state.DE.low);
-      break;
+      return Sra(_state.DE.low);
     case 0x2C:
-      Sra(_state.HL.high);
-      break;
+      return Sra(_state.HL.high);
     case 0x2D:
-      Sra(_state.HL.low);
-      break;
+      return Sra(_state.HL.low);
     case 0x2E:
-      Sra(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Sra(_mmu.Address(_state.HL.reg));
     case 0x2F:
-      Sra(_state.AF.high);
-      break;
+      return Sra(_state.AF.high);
     case 0x30:
-      Swap(_state.BC.high);
-      break;
+      return Swap(_state.BC.high);
     case 0x31:
-      Swap(_state.BC.low);
-      break;
+      return Swap(_state.BC.low);
     case 0x32:
-      Swap(_state.DE.high);
-      break;
+      return Swap(_state.DE.high);
     case 0x33:
-      Swap(_state.DE.low);
-      break;
+      return Swap(_state.DE.low);
     case 0x34:
-      Swap(_state.HL.high);
-      break;
+      return Swap(_state.HL.high);
     case 0x35:
-      Swap(_state.HL.low);
-      break;
+      return Swap(_state.HL.low);
     case 0x36:
-      Swap(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Swap(_mmu.Address(_state.HL.reg));
     case 0x37:
-      Swap(_state.AF.high);
-      break;
+      return Swap(_state.AF.high);
     case 0x38:
-      Srl(_state.BC.high);
-      break;
+      return Srl(_state.BC.high);
     case 0x39:
-      Srl(_state.BC.low);
-      break;
+      return Srl(_state.BC.low);
     case 0x3A:
-      Srl(_state.DE.high);
-      break;
+      return Srl(_state.DE.high);
     case 0x3B:
-      Srl(_state.DE.low);
-      break;
+      return Srl(_state.DE.low);
     case 0x3C:
-      Srl(_state.HL.high);
-      break;
+      return Srl(_state.HL.high);
     case 0x3D:
-      Srl(_state.HL.low);
-      break;
+      return Srl(_state.HL.low);
     case 0x3E:
-      Srl(_mmu.Address(_state.HL.reg));
-      break;
+      return 8 + Srl(_mmu.Address(_state.HL.reg));
     case 0x3F:
-      Srl(_state.AF.high);
-      break;
+      return Srl(_state.AF.high);
     case 0x40:
-      Bit(_state.BC.high, 0);
-      break;
+      return Bit(_state.BC.high, 0);
     case 0x41:
-      Bit(_state.BC.low, 0);
-      break;
+      return Bit(_state.BC.low, 0);
     case 0x42:
-      Bit(_state.DE.high, 0);
-      break;
+      return Bit(_state.DE.high, 0);
     case 0x43:
-      Bit(_state.DE.low, 0);
-      break;
+      return Bit(_state.DE.low, 0);
     case 0x44:
-      Bit(_state.HL.high, 0);
-      break;
+      return Bit(_state.HL.high, 0);
     case 0x45:
-      Bit(_state.HL.low, 0);
-      break;
+      return Bit(_state.HL.low, 0);
     case 0x46:
-      Bit(_mmu.Read(_state.HL.reg), 0);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 0);
     case 0x47:
-      Bit(_state.AF.high, 0);
-      break;
+      return Bit(_state.AF.high, 0);
     case 0x48:
-      Bit(_state.BC.high, 1);
-      break;
+      return Bit(_state.BC.high, 1);
     case 0x49:
-      Bit(_state.BC.low, 1);
-      break;
+      return Bit(_state.BC.low, 1);
     case 0x4A:
-      Bit(_state.DE.high, 1);
-      break;
+      return Bit(_state.DE.high, 1);
     case 0x4B:
-      Bit(_state.DE.low, 1);
-      break;
+      return Bit(_state.DE.low, 1);
     case 0x4C:
-      Bit(_state.HL.high, 1);
-      break;
+      return Bit(_state.HL.high, 1);
     case 0x4D:
-      Bit(_state.HL.low, 1);
-      break;
+      return Bit(_state.HL.low, 1);
     case 0x4E:
-      Bit(_mmu.Read(_state.HL.reg), 1);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 1);
     case 0x4F:
-      Bit(_state.AF.high, 1);
-      break;
+      return Bit(_state.AF.high, 1);
     case 0x50:
-      Bit(_state.BC.high, 2);
-      break;
+      return Bit(_state.BC.high, 2);
     case 0x51:
-      Bit(_state.BC.low, 2);
-      break;
+      return Bit(_state.BC.low, 2);
     case 0x52:
-      Bit(_state.DE.high, 2);
-      break;
+      return Bit(_state.DE.high, 2);
     case 0x53:
-      Bit(_state.DE.low, 2);
-      break;
+      return Bit(_state.DE.low, 2);
     case 0x54:
-      Bit(_state.HL.high, 2);
-      break;
+      return Bit(_state.HL.high, 2);
     case 0x55:
-      Bit(_state.HL.low, 2);
-      break;
+      return Bit(_state.HL.low, 2);
     case 0x56:
-      Bit(_mmu.Read(_state.HL.reg), 2);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 2);
     case 0x57:
-      Bit(_state.AF.high, 2);
-      break;
+      return Bit(_state.AF.high, 2);
     case 0x58:
-      Bit(_state.BC.high, 3);
-      break;
+      return Bit(_state.BC.high, 3);
     case 0x59:
-      Bit(_state.BC.low, 3);
-      break;
+      return Bit(_state.BC.low, 3);
     case 0x5A:
-      Bit(_state.DE.high, 3);
-      break;
+      return Bit(_state.DE.high, 3);
     case 0x5B:
-      Bit(_state.DE.low, 3);
-      break;
+      return Bit(_state.DE.low, 3);
     case 0x5C:
-      Bit(_state.HL.high, 3);
-      break;
+      return Bit(_state.HL.high, 3);
     case 0x5D:
-      Bit(_state.HL.low, 3);
-      break;
+      return Bit(_state.HL.low, 3);
     case 0x5E:
-      Bit(_mmu.Read(_state.HL.reg), 3);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 3);
     case 0x5F:
-      Bit(_state.AF.high, 3);
-      break;
+      return Bit(_state.AF.high, 3);
     case 0x60:
-      Bit(_state.BC.high, 4);
-      break;
+      return Bit(_state.BC.high, 4);
     case 0x61:
-      Bit(_state.BC.low, 4);
-      break;
+      return Bit(_state.BC.low, 4);
     case 0x62:
-      Bit(_state.DE.high, 4);
-      break;
+      return Bit(_state.DE.high, 4);
     case 0x63:
-      Bit(_state.DE.low, 4);
-      break;
+      return Bit(_state.DE.low, 4);
     case 0x64:
-      Bit(_state.HL.high, 4);
-      break;
+      return Bit(_state.HL.high, 4);
     case 0x65:
-      Bit(_state.HL.low, 4);
-      break;
+      return Bit(_state.HL.low, 4);
     case 0x66:
-      Bit(_mmu.Read(_state.HL.reg), 4);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 4);
     case 0x67:
-      Bit(_state.AF.high, 4);
-      break;
+      return Bit(_state.AF.high, 4);
     case 0x68:
-      Bit(_state.BC.high, 5);
-      break;
+      return Bit(_state.BC.high, 5);
     case 0x69:
-      Bit(_state.BC.low, 5);
-      break;
+      return Bit(_state.BC.low, 5);
     case 0x6A:
-      Bit(_state.DE.high, 5);
-      break;
+      return Bit(_state.DE.high, 5);
     case 0x6B:
-      Bit(_state.DE.low, 5);
-      break;
+      return Bit(_state.DE.low, 5);
     case 0x6C:
-      Bit(_state.HL.high, 5);
-      break;
+      return Bit(_state.HL.high, 5);
     case 0x6D:
-      Bit(_state.HL.low, 5);
-      break;
+      return Bit(_state.HL.low, 5);
     case 0x6E:
-      Bit(_mmu.Read(_state.HL.reg), 5);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 5);
     case 0x6F:
-      Bit(_state.AF.high, 5);
-      break;
+      return Bit(_state.AF.high, 5);
     case 0x70:
-      Bit(_state.BC.high, 6);
-      break;
+      return Bit(_state.BC.high, 6);
     case 0x71:
-      Bit(_state.BC.low, 6);
-      break;
+      return Bit(_state.BC.low, 6);
     case 0x72:
-      Bit(_state.DE.high, 6);
-      break;
+      return Bit(_state.DE.high, 6);
     case 0x73:
-      Bit(_state.DE.low, 6);
-      break;
+      return Bit(_state.DE.low, 6);
     case 0x74:
-      Bit(_state.HL.high, 6);
-      break;
+      return Bit(_state.HL.high, 6);
     case 0x75:
-      Bit(_state.HL.low, 6);
-      break;
+      return Bit(_state.HL.low, 6);
     case 0x76:
-      Bit(_mmu.Read(_state.HL.reg), 6);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 6);
     case 0x77:
-      Bit(_state.AF.high, 6);
-      break;
+      return Bit(_state.AF.high, 6);
     case 0x78:
-      Bit(_state.BC.high, 7);
-      break;
+      return Bit(_state.BC.high, 7);
     case 0x79:
-      Bit(_state.BC.low, 7);
-      break;
+      return Bit(_state.BC.low, 7);
     case 0x7A:
-      Bit(_state.DE.high, 7);
-      break;
+      return Bit(_state.DE.high, 7);
     case 0x7B:
-      Bit(_state.DE.low, 7);
-      break;
+      return Bit(_state.DE.low, 7);
     case 0x7C:
-      Bit(_state.HL.high, 7);
-      break;
+      return Bit(_state.HL.high, 7);
     case 0x7D:
-      Bit(_state.HL.low, 7);
-      break;
+      return Bit(_state.HL.low, 7);
     case 0x7E:
-      Bit(_mmu.Read(_state.HL.reg), 7);
-      break;
+      return 4 + Bit(_mmu.Read(_state.HL.reg), 7);
     case 0x7F:
-      Bit(_state.AF.high, 7);
-      break;
+      return Bit(_state.AF.high, 7);
     case 0x80:
-      Res(_state.BC.high, 0);
-      break;
+      return Res(_state.BC.high, 0);
     case 0x81:
-      Res(_state.BC.low, 0);
-      break;
+      return Res(_state.BC.low, 0);
     case 0x82:
-      Res(_state.DE.high, 0);
-      break;
+      return Res(_state.DE.high, 0);
     case 0x83:
-      Res(_state.DE.low, 0);
-      break;
+      return Res(_state.DE.low, 0);
     case 0x84:
-      Res(_state.HL.high, 0);
-      break;
+      return Res(_state.HL.high, 0);
     case 0x85:
-      Res(_state.HL.low, 0);
-      break;
+      return Res(_state.HL.low, 0);
     case 0x86:
-      Res(_mmu.Address(_state.HL.reg), 0);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 0);
     case 0x87:
-      Res(_state.AF.high, 0);
-      break;
+      return Res(_state.AF.high, 0);
     case 0x88:
-      Res(_state.BC.high, 1);
-      break;
+      return Res(_state.BC.high, 1);
     case 0x89:
-      Res(_state.BC.low, 1);
-      break;
+      return Res(_state.BC.low, 1);
     case 0x8A:
-      Res(_state.DE.high, 1);
-      break;
+      return Res(_state.DE.high, 1);
     case 0x8B:
-      Res(_state.DE.low, 1);
-      break;
+      return Res(_state.DE.low, 1);
     case 0x8C:
-      Res(_state.HL.high, 1);
-      break;
+      return Res(_state.HL.high, 1);
     case 0x8D:
-      Res(_state.HL.low, 1);
-      break;
+      return Res(_state.HL.low, 1);
     case 0x8E:
-      Res(_mmu.Address(_state.HL.reg), 1);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 1);
     case 0x8F:
-      Res(_state.AF.high, 1);
-      break;
+      return Res(_state.AF.high, 1);
     case 0x90:
-      Res(_state.BC.high, 2);
-      break;
+      return Res(_state.BC.high, 2);
     case 0x91:
-      Res(_state.BC.low, 2);
-      break;
+      return Res(_state.BC.low, 2);
     case 0x92:
-      Res(_state.DE.high, 2);
-      break;
+      return Res(_state.DE.high, 2);
     case 0x93:
-      Res(_state.DE.low, 2);
-      break;
+      return Res(_state.DE.low, 2);
     case 0x94:
-      Res(_state.HL.high, 2);
-      break;
+      return Res(_state.HL.high, 2);
     case 0x95:
-      Res(_state.HL.low, 2);
-      break;
+      return Res(_state.HL.low, 2);
     case 0x96:
-      Res(_mmu.Address(_state.HL.reg), 2);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 2);
     case 0x97:
-      Res(_state.AF.high, 2);
-      break;
+      return Res(_state.AF.high, 2);
     case 0x98:
-      Res(_state.BC.high, 3);
-      break;
+      return Res(_state.BC.high, 3);
     case 0x99:
-      Res(_state.BC.low, 3);
-      break;
+      return Res(_state.BC.low, 3);
     case 0x9A:
-      Res(_state.DE.high, 3);
-      break;
+      return Res(_state.DE.high, 3);
     case 0x9B:
-      Res(_state.DE.low, 3);
-      break;
+      return Res(_state.DE.low, 3);
     case 0x9C:
-      Res(_state.HL.high, 3);
-      break;
+      return Res(_state.HL.high, 3);
     case 0x9D:
-      Res(_state.HL.low, 3);
-      break;
+      return Res(_state.HL.low, 3);
     case 0x9E:
-      Res(_mmu.Address(_state.HL.reg), 3);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 3);
     case 0x9F:
-      Res(_state.AF.high, 3);
-      break;
+      return Res(_state.AF.high, 3);
     case 0xA0:
-      Res(_state.BC.high, 4);
-      break;
+      return Res(_state.BC.high, 4);
     case 0xA1:
-      Res(_state.BC.low, 4);
-      break;
+      return Res(_state.BC.low, 4);
     case 0xA2:
-      Res(_state.DE.high, 4);
-      break;
+      return Res(_state.DE.high, 4);
     case 0xA3:
-      Res(_state.DE.low, 4);
-      break;
+      return Res(_state.DE.low, 4);
     case 0xA4:
-      Res(_state.HL.high, 4);
-      break;
+      return Res(_state.HL.high, 4);
     case 0xA5:
-      Res(_state.HL.low, 4);
-      break;
+      return Res(_state.HL.low, 4);
     case 0xA6:
-      Res(_mmu.Address(_state.HL.reg), 4);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 4);
     case 0xA7:
-      Res(_state.AF.high, 4);
-      break;
+      return Res(_state.AF.high, 4);
     case 0xA8:
-      Res(_state.BC.high, 5);
-      break;
+      return Res(_state.BC.high, 5);
     case 0xA9:
-      Res(_state.BC.low, 5);
-      break;
+      return Res(_state.BC.low, 5);
     case 0xAA:
-      Res(_state.DE.high, 5);
-      break;
+      return Res(_state.DE.high, 5);
     case 0xAB:
-      Res(_state.DE.low, 5);
-      break;
+      return Res(_state.DE.low, 5);
     case 0xAC:
-      Res(_state.HL.high, 5);
-      break;
+      return Res(_state.HL.high, 5);
     case 0xAD:
-      Res(_state.HL.low, 5);
-      break;
+      return Res(_state.HL.low, 5);
     case 0xAE:
-      Res(_mmu.Address(_state.HL.reg), 5);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 5);
     case 0xAF:
-      Res(_state.AF.high, 5);
-      break;
+      return Res(_state.AF.high, 5);
     case 0xB0:
-      Res(_state.BC.high, 6);
-      break;
+      return Res(_state.BC.high, 6);
     case 0xB1:
-      Res(_state.BC.low, 6);
-      break;
+      return Res(_state.BC.low, 6);
     case 0xB2:
-      Res(_state.DE.high, 6);
-      break;
+      return Res(_state.DE.high, 6);
     case 0xB3:
-      Res(_state.DE.low, 6);
-      break;
+      return Res(_state.DE.low, 6);
     case 0xB4:
-      Res(_state.HL.high, 6);
-      break;
+      return Res(_state.HL.high, 6);
     case 0xB5:
-      Res(_state.HL.low, 6);
-      break;
+      return Res(_state.HL.low, 6);
     case 0xB6:
-      Res(_mmu.Address(_state.HL.reg), 6);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 6);
     case 0xB7:
-      Res(_state.AF.high, 6);
-      break;
+      return Res(_state.AF.high, 6);
     case 0xB8:
-      Res(_state.BC.high, 7);
-      break;
+      return Res(_state.BC.high, 7);
     case 0xB9:
-      Res(_state.BC.low, 7);
-      break;
+      return Res(_state.BC.low, 7);
     case 0xBA:
-      Res(_state.DE.high, 7);
-      break;
+      return Res(_state.DE.high, 7);
     case 0xBB:
-      Res(_state.DE.low, 7);
-      break;
+      return Res(_state.DE.low, 7);
     case 0xBC:
-      Res(_state.HL.high, 7);
-      break;
+      return Res(_state.HL.high, 7);
     case 0xBD:
-      Res(_state.HL.low, 7);
-      break;
+      return Res(_state.HL.low, 7);
     case 0xBE:
-      Res(_mmu.Address(_state.HL.reg), 7);
-      break;
+      return 8 + Res(_mmu.Address(_state.HL.reg), 7);
     case 0xBF:
-      Res(_state.AF.high, 7);
-      break;
+      return Res(_state.AF.high, 7);
     case 0xC0:
-      Set(_state.BC.high, 0);
-      break;
+      return Set(_state.BC.high, 0);
     case 0xC1:
-      Set(_state.BC.low, 0);
-      break;
+      return Set(_state.BC.low, 0);
     case 0xC2:
-      Set(_state.DE.high, 0);
-      break;
+      return Set(_state.DE.high, 0);
     case 0xC3:
-      Set(_state.DE.low, 0);
-      break;
+      return Set(_state.DE.low, 0);
     case 0xC4:
-      Set(_state.HL.high, 0);
-      break;
+      return Set(_state.HL.high, 0);
     case 0xC5:
-      Set(_state.HL.low, 0);
-      break;
+      return Set(_state.HL.low, 0);
     case 0xC6:
-      Set(_mmu.Address(_state.HL.reg), 0);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 0);
     case 0xC7:
-      Set(_state.AF.high, 0);
-      break;
+      return Set(_state.AF.high, 0);
     case 0xC8:
-      Set(_state.BC.high, 1);
-      break;
+      return Set(_state.BC.high, 1);
     case 0xC9:
-      Set(_state.BC.low, 1);
-      break;
+      return Set(_state.BC.low, 1);
     case 0xCA:
-      Set(_state.DE.high, 1);
-      break;
+      return Set(_state.DE.high, 1);
     case 0xCB:
-      Set(_state.DE.low, 1);
-      break;
+      return Set(_state.DE.low, 1);
     case 0xCC:
-      Set(_state.HL.high, 1);
-      break;
+      return Set(_state.HL.high, 1);
     case 0xCD:
-      Set(_state.HL.low, 1);
-      break;
+      return Set(_state.HL.low, 1);
     case 0xCE:
-      Set(_mmu.Address(_state.HL.reg), 1);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 1);
     case 0xCF:
-      Set(_state.AF.high, 1);
-      break;
+      return Set(_state.AF.high, 1);
     case 0xD0:
-      Set(_state.BC.high, 2);
-      break;
+      return Set(_state.BC.high, 2);
     case 0xD1:
-      Set(_state.BC.low, 2);
-      break;
+      return Set(_state.BC.low, 2);
     case 0xD2:
-      Set(_state.DE.high, 2);
-      break;
+      return Set(_state.DE.high, 2);
     case 0xD3:
-      Set(_state.DE.low, 2);
-      break;
+      return Set(_state.DE.low, 2);
     case 0xD4:
-      Set(_state.HL.high, 2);
-      break;
+      return Set(_state.HL.high, 2);
     case 0xD5:
-      Set(_state.HL.low, 2);
-      break;
+      return Set(_state.HL.low, 2);
     case 0xD6:
-      Set(_mmu.Address(_state.HL.reg), 2);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 2);
     case 0xD7:
-      Set(_state.AF.high, 2);
-      break;
+      return Set(_state.AF.high, 2);
     case 0xD8:
-      Set(_state.BC.high, 3);
-      break;
+      return Set(_state.BC.high, 3);
     case 0xD9:
-      Set(_state.BC.low, 3);
-      break;
+      return Set(_state.BC.low, 3);
     case 0xDA:
-      Set(_state.DE.high, 3);
-      break;
+      return Set(_state.DE.high, 3);
     case 0xDB:
-      Set(_state.DE.low, 3);
-      break;
+      return Set(_state.DE.low, 3);
     case 0xDC:
-      Set(_state.HL.high, 3);
-      break;
+      return Set(_state.HL.high, 3);
     case 0xDD:
-      Set(_state.HL.low, 3);
-      break;
+      return Set(_state.HL.low, 3);
     case 0xDE:
-      Set(_mmu.Address(_state.HL.reg), 3);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 3);
     case 0xDF:
-      Set(_state.AF.high, 3);
-      break;
+      return Set(_state.AF.high, 3);
     case 0xE0:
-      Set(_state.BC.high, 4);
-      break;
+      return Set(_state.BC.high, 4);
     case 0xE1:
-      Set(_state.BC.low, 4);
-      break;
+      return Set(_state.BC.low, 4);
     case 0xE2:
-      Set(_state.DE.high, 4);
-      break;
+      return Set(_state.DE.high, 4);
     case 0xE3:
-      Set(_state.DE.low, 4);
-      break;
+      return Set(_state.DE.low, 4);
     case 0xE4:
-      Set(_state.HL.high, 4);
-      break;
+      return Set(_state.HL.high, 4);
     case 0xE5:
-      Set(_state.HL.low, 4);
-      break;
+      return Set(_state.HL.low, 4);
     case 0xE6:
-      Set(_mmu.Address(_state.HL.reg), 4);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 4);
     case 0xE7:
-      Set(_state.AF.high, 4);
-      break;
+      return Set(_state.AF.high, 4);
     case 0xE8:
-      Set(_state.BC.high, 5);
-      break;
+      return Set(_state.BC.high, 5);
     case 0xE9:
-      Set(_state.BC.low, 5);
-      break;
+      return Set(_state.BC.low, 5);
     case 0xEA:
-      Set(_state.DE.high, 5);
-      break;
+      return Set(_state.DE.high, 5);
     case 0xEB:
-      Set(_state.DE.low, 5);
-      break;
+      return Set(_state.DE.low, 5);
     case 0xEC:
-      Set(_state.HL.high, 5);
-      break;
+      return Set(_state.HL.high, 5);
     case 0xED:
-      Set(_state.HL.low, 5);
-      break;
+      return Set(_state.HL.low, 5);
     case 0xEE:
-      Set(_mmu.Address(_state.HL.reg), 5);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 5);
     case 0xEF:
-      Set(_state.AF.high, 5);
-      break;
+      return Set(_state.AF.high, 5);
     case 0xF0:
-      Set(_state.BC.high, 6);
-      break;
+      return Set(_state.BC.high, 6);
     case 0xF1:
-      Set(_state.BC.low, 6);
-      break;
+      return Set(_state.BC.low, 6);
     case 0xF2:
-      Set(_state.DE.high, 6);
-      break;
+      return Set(_state.DE.high, 6);
     case 0xF3:
-      Set(_state.DE.low, 6);
-      break;
+      return Set(_state.DE.low, 6);
     case 0xF4:
-      Set(_state.HL.high, 6);
-      break;
+      return Set(_state.HL.high, 6);
     case 0xF5:
-      Set(_state.HL.low, 6);
-      break;
+      return Set(_state.HL.low, 6);
     case 0xF6:
-      Set(_mmu.Address(_state.HL.reg), 6);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 6);
     case 0xF7:
-      Set(_state.AF.high, 6);
-      break;
+      return Set(_state.AF.high, 6);
     case 0xF8:
-      Set(_state.BC.high, 7);
-      break;
+      return Set(_state.BC.high, 7);
     case 0xF9:
-      Set(_state.BC.low, 7);
-      break;
+      return Set(_state.BC.low, 7);
     case 0xFA:
-      Set(_state.DE.high, 7);
-      break;
+      return Set(_state.DE.high, 7);
     case 0xFB:
-      Set(_state.DE.low, 7);
-      break;
+      return Set(_state.DE.low, 7);
     case 0xFC:
-      Set(_state.HL.high, 7);
-      break;
+      return Set(_state.HL.high, 7);
     case 0xFD:
-      Set(_state.HL.low, 7);
-      break;
+      return Set(_state.HL.low, 7);
     case 0xFE:
-      Set(_mmu.Address(_state.HL.reg), 7);
-      break;
+      return 8 + Set(_mmu.Address(_state.HL.reg), 7);
     case 0xFF:
-      Set(_state.AF.high, 7);
-      break;
+      return Set(_state.AF.high, 7);
     default:
       throw std::runtime_error(std::format(
           "[CB] PC: {:#06X}, failed to execute instruction \033[31m{:#04X}\033[0m",
           _state.PC.reg - 1, opcode));
   }
+  return 0x00;
 }
 
 void Cpu::HandleInterruptsIfAny()
@@ -1687,7 +1192,7 @@ void Cpu::DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType)
 
 // opcodes
 
-void Cpu::DecHl()
+int Cpu::DecHl()
 {
   uint8_t data = _mmu.Read(_state.HL.reg);
   uint16_t res = data - 1;
@@ -1697,21 +1202,24 @@ void Cpu::DecHl()
   SetH(((data & 0x0FU) - 1U) > 0x0F);
 
   _mmu.Write(_state.HL.reg, (res & 0xFFU));
+  return 12;
 }
 
-void Cpu::LdAU16()
+int Cpu::LdAU16()
 {
   uint8_t lsb = _mmu.Read(_state.PC.reg++);
   uint8_t msb = _mmu.Read(_state.PC.reg++);
   _state.AF.high = _mmu.Read(ToU16(lsb, msb));
+  return 16;
 }
 
-void Cpu::LdSpHl()
+int Cpu::LdSpHl()
 {
   _state.SP.reg = _state.HL.reg;
+  return 8;
 }
 
-void Cpu::LdHlS8()
+int Cpu::LdHlS8()
 {
   auto i8 = static_cast<int8_t>(_mmu.Read(_state.PC.reg++));
   uint16_t res = _state.SP.reg + static_cast<std::uint16_t>(i8);
@@ -1721,9 +1229,10 @@ void Cpu::LdHlS8()
   SetCY(((_state.SP.reg ^ i8 ^ res) & 0x100) != 0);
 
   _state.HL.reg = res;
+  return 12;
 }
 
-void Cpu::OrU8()
+int Cpu::OrU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   uint16_t res =
@@ -1735,14 +1244,16 @@ void Cpu::OrU8()
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::LdAC()
+int Cpu::LdAC()
 {
   _state.AF.high = _mmu.Read(0xFF00 + _state.BC.low);
+  return 8;
 }
 
-void Cpu::AndU8()
+int Cpu::AndU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   uint8_t res = _state.AF.high & u8;
@@ -1752,9 +1263,10 @@ void Cpu::AndU8()
   SetCY(false);
 
   _state.AF.high = res;
+  return 8;
 }
 
-void Cpu::AddSpS8()
+int Cpu::AddSpS8()
 {
   auto i8 = static_cast<int8_t>(_mmu.Read(_state.PC.reg++));
   uint16_t res = _state.SP.reg + static_cast<std::uint16_t>(i8);
@@ -1765,14 +1277,16 @@ void Cpu::AddSpS8()
   SetCY(((_state.SP.reg ^ i8 ^ res) & 0x100) != 0);
 
   _state.SP.reg = res;
+  return 16;
 }
 
-void Cpu::JpHl()
+int Cpu::JpHl()
 {
   _state.PC.reg = _state.HL.reg;
+  return 4;
 }
 
-void Cpu::XorU8()
+int Cpu::XorU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   uint8_t res = _state.AF.high ^ u8;
@@ -1782,17 +1296,19 @@ void Cpu::XorU8()
   SetCY(false);
 
   _state.AF.high = res;
+  return 8;
 }
 
-void Cpu::RetI()
+int Cpu::RetI()
 {
   uint8_t lsb = _mmu.Read(_state.SP.reg++);
   uint8_t msb = _mmu.Read(_state.SP.reg++);
   _state.PC.reg = ToU16(lsb, msb);
   _state._interrupt->_ime = true;
+  return 16;
 }
 
-void Cpu::SubU8()
+int Cpu::SubU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   uint16_t res =
@@ -1804,9 +1320,10 @@ void Cpu::SubU8()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::SbcU8()
+int Cpu::SbcU8()
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
@@ -1819,15 +1336,17 @@ void Cpu::SbcU8()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::AddU8()
+int Cpu::AddU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   AddR(u8);
+  return 8;
 }
 
-void Cpu::AdcU8()
+int Cpu::AdcU8()
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
@@ -1840,9 +1359,10 @@ void Cpu::AdcU8()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::AndR(std::uint8_t reg)
+int Cpu::AndR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) & static_cast<uint16_t>(reg);
@@ -1853,9 +1373,10 @@ void Cpu::AndR(std::uint8_t reg)
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::AndIHl()
+int Cpu::AndIHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -1867,9 +1388,10 @@ void Cpu::AndIHl()
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::XorR(std::uint8_t reg)
+int Cpu::XorR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) ^ static_cast<uint16_t>(reg);
@@ -1880,9 +1402,10 @@ void Cpu::XorR(std::uint8_t reg)
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::XorIHl()
+int Cpu::XorIHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -1894,9 +1417,10 @@ void Cpu::XorIHl()
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::OrR(std::uint8_t reg)
+int Cpu::OrR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) | static_cast<uint16_t>(reg);
@@ -1907,9 +1431,10 @@ void Cpu::OrR(std::uint8_t reg)
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::OrIHl()
+int Cpu::OrIHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -1921,9 +1446,10 @@ void Cpu::OrIHl()
   SetCY(false);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::CpR(std::uint8_t reg)
+int Cpu::CpR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) - static_cast<uint16_t>(reg);
@@ -1932,9 +1458,10 @@ void Cpu::CpR(std::uint8_t reg)
   SetN(true);
   SetH(((_state.AF.high & 0xFU) - (reg & 0xFU)) > 0xFU);
   SetCY(res > 0xFFU);
+  return 4;
 }
 
-void Cpu::CpIHl()
+int Cpu::CpIHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -1944,9 +1471,10 @@ void Cpu::CpIHl()
   SetN(true);
   SetH(((_state.AF.high & 0xFU) - (u8 & 0xFU)) > 0xFU);
   SetCY(res > 0xFFU);
+  return 8;
 }
 
-void Cpu::SubIHl()
+int Cpu::SubIHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -1958,9 +1486,10 @@ void Cpu::SubIHl()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::SbcIHl()
+int Cpu::SbcIHl()
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint8_t u8 = _mmu.Read(_state.HL.reg);
@@ -1973,9 +1502,10 @@ void Cpu::SbcIHl()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::SbcR(std::uint8_t reg)
+int Cpu::SbcR(std::uint8_t reg)
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint16_t res =
@@ -1987,9 +1517,10 @@ void Cpu::SbcR(std::uint8_t reg)
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::AdcIHl()
+int Cpu::AdcIHl()
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint8_t u8 = _mmu.Read(_state.HL.reg);
@@ -2002,9 +1533,10 @@ void Cpu::AdcIHl()
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::AddR(std::uint8_t reg)
+int Cpu::AddR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) + static_cast<uint16_t>(reg);
@@ -2015,9 +1547,10 @@ void Cpu::AddR(std::uint8_t reg)
   SetCY(((_state.AF.high ^ reg ^ res) & 0x100) != 0);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::AdcR(std::uint8_t reg)
+int Cpu::AdcR(std::uint8_t reg)
 {
   auto c = static_cast<uint16_t>((_state.AF.low & (1U << 4U)) >> 4U);
   uint16_t res =
@@ -2029,36 +1562,40 @@ void Cpu::AdcR(std::uint8_t reg)
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::Halt()
+int Cpu::Halt()
 {
   throw std::runtime_error(
       std::format("Unimplemented instruction: 0x76 (HALT)"));
 }
 
-void Cpu::Ccf()
+int Cpu::Ccf()
 {
   SetN(false);
   SetH(false);
 
   _state.AF.low = _state.AF.low ^ (1U << 4U);
+  return 4;
 }
 
-void Cpu::LdAHlN()
+int Cpu::LdAHlN()
 {
   _state.AF.high = _mmu.Read(_state.HL.reg);
   _state.HL.reg = _state.HL.reg - 1;
+  return 8;
 }
 
-void Cpu::Scf()
+int Cpu::Scf()
 {
   SetN(false);
   SetH(false);
   SetCY(true);
+  return 4;
 }
 
-void Cpu::IncIHl()
+int Cpu::IncIHl()
 {
   uint8_t data = _mmu.Read(_state.HL.reg);
   uint16_t res = data + 1;
@@ -2068,19 +1605,21 @@ void Cpu::IncIHl()
   SetH(((data & 0x0FU) + 1U) > 0x0F);
 
   _mmu.Write(_state.HL.reg, (res & 0xFFU));
+  return 12;
 }
 
-void Cpu::Cpl()
+int Cpu::Cpl()
 {
   SetN(true);
   SetH(true);
 
   _state.AF.high = static_cast<std::uint8_t>(~_state.AF.high);
+  return 4;
 }
 
 // DAA
 // (https://forums.nesdev.org/viewtopic.php?p=196282&sid=a1cdd6adc0b01ea3d77f61aee9527449#p196282)
-void Cpu::Daa()
+int Cpu::Daa()
 {
   if (!(_state.AF.low & (1U << 6U)))
   {
@@ -2108,9 +1647,11 @@ void Cpu::Daa()
 
   SetZ(_state.AF.high == 0);
   SetH(false);
+
+  return 4;
 }
 
-void Cpu::Rra()
+int Cpu::Rra()
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
 
@@ -2122,15 +1663,17 @@ void Cpu::Rra()
   _state.AF.high = _state.AF.high >> 1U;
   _state.AF.high =
       (_state.AF.high & ~(1U << 7U)) | static_cast<uint8_t>(oldCY << 7U);
+  return 4;
 }
 
-void Cpu::Stop()
+int Cpu::Stop()
 {
   // TODO: check what needs to be done here
   LOG_WARN(_logger, std::format("Unimplemented instruction: 0x10 (STOP)"));
+  return 4;
 }
 
-void Cpu::Rrca()
+int Cpu::Rrca()
 {
   uint8_t b0 = (_state.AF.high & (1U << 0U));
 
@@ -2142,9 +1685,10 @@ void Cpu::Rrca()
   _state.AF.high = _state.AF.high >> 1U;
   _state.AF.high =
       (_state.AF.high & ~(1U << 7U)) | static_cast<uint8_t>(b0 << 7U);
+  return 4;
 }
 
-void Cpu::LdDU16Sp()
+int Cpu::LdDU16Sp()
 {
   uint8_t lsb = _mmu.Read(_state.PC.reg++);
   uint8_t msb = _mmu.Read(_state.PC.reg++);
@@ -2152,9 +1696,10 @@ void Cpu::LdDU16Sp()
   _mmu.Write(nn, _state.SP.low);
   ++nn;
   _mmu.Write(nn, _state.SP.high);
+  return 20;
 }
 
-void Cpu::Rlca()
+int Cpu::Rlca()
 {
   SetZ(false);
   SetN(false);
@@ -2164,14 +1709,16 @@ void Cpu::Rlca()
   _state.AF.high = static_cast<std::uint8_t>(_state.AF.high << 1U);
   _state.AF.high =
       ((_state.AF.high & ~(1U << 0U)) | ((_state.AF.low & (1U << 4U)) >> 4U));
+  return 4;
 }
 
-void Cpu::LdIRrA(Register &reg)
+int Cpu::LdIRrA(Register &reg)
 {
   _mmu.Write(reg.reg, _state.AF.high);
+  return 8;
 }
 
-void Cpu::AddHlRr(Register &reg)
+int Cpu::AddHlRr(Register &reg)
 {
   uint32_t res =
       static_cast<uint32_t>(_state.HL.reg) + static_cast<uint32_t>(reg.reg);
@@ -2181,67 +1728,81 @@ void Cpu::AddHlRr(Register &reg)
   SetCY(res > 0xFFFFU);
 
   _state.HL.reg = res & 0xFFFFU;
+  return 8;
 }
 
-void Cpu::RstU8(std::uint8_t addr)
+int Cpu::RstU8(std::uint8_t addr)
 {
   _state.SP.reg--;
   _mmu.Write(_state.SP.reg, _state.PC.high);
   _state.SP.reg--;
   _mmu.Write(_state.SP.reg, _state.PC.low);
   _state.PC.reg = ToU16(addr, 0x00);
+  return 16;
 }
 
-void Cpu::LdRIHl(std::uint8_t &reg)
+int Cpu::LdRIHl(std::uint8_t &reg)
 {
   reg = _mmu.Read(_state.HL.reg);
+  return 8;
 }
 
-void Cpu::Ei()
+int Cpu::Ei()
 {
   _state._interrupt->_enableRequested = true;
   LOG_DEBUG(_logger, "Enable interrupt requested");
+  return 4;
 }
 
-void Cpu::DecRr(Register &reg)
+int Cpu::DecRr(Register &reg)
 {
   reg.reg--;
+  return 8;
 }
 
-void Cpu::LdAHlP()
+int Cpu::LdAHlP()
 {
   _state.AF.high = _mmu.Read(_state.HL.reg);
   _state.HL.reg++;
+  return 8;
 }
 
-void Cpu::LdHlU8()
+int Cpu::LdHlU8()
 {
   auto data = _mmu.Read(_state.PC.reg++);
   _mmu.Write(_state.HL.reg, data);
+  return 12;
 }
 
-void Cpu::Di()
+int Cpu::Di()
 {
   _state._interrupt->_enableRequested = false;
   _state._interrupt->_ime = false;
   LOG_DEBUG(_logger, "Interrupt disabled");
+  return 4;
 }
 
-void Cpu::JpCcU16(bool cc)
+int Cpu::JpCcU16(bool cc)
 {
   auto lsb = _mmu.Read(_state.PC.reg++);
   auto msb = _mmu.Read(_state.PC.reg++);
   if (cc)
   {
     _state.PC.reg = ToU16(lsb, msb);
+    return 16;
+  }
+  else
+  {
+    return 12;
   }
 }
 
-void Cpu::Nop()
+int Cpu::Nop()
 {
+  return 4;
 }
 
-void Cpu::SubR(std::uint8_t reg)
+int Cpu::SubR(std::uint8_t reg)
 {
   uint16_t res =
       static_cast<uint16_t>(_state.AF.high) - static_cast<uint16_t>(reg);
@@ -2252,9 +1813,10 @@ void Cpu::SubR(std::uint8_t reg)
   SetCY(res > 0xFFU);
 
   _state.AF.high = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::AddAHl()
+int Cpu::AddAHl()
 {
   auto data = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -2266,15 +1828,17 @@ void Cpu::AddAHl()
   SetCY(((_state.AF.high ^ data ^ res) & 0x100) != 0);
 
   _state.AF.high = (res & 0xFFU);
+  return 8;
 }
 
-void Cpu::LdU16A()
+int Cpu::LdU16A()
 {
   auto low = _mmu.Read(_state.PC.reg++);
   auto high = _mmu.Read(_state.PC.reg++);
   _mmu.Write(ToU16(low, high), _state.AF.high);
+  return 16;
 }
-void Cpu::CpU8()
+int Cpu::CpU8()
 {
   uint8_t u8 = _mmu.Read(_state.PC.reg++);
   uint16_t res =
@@ -2284,9 +1848,10 @@ void Cpu::CpU8()
   SetN(true);
   SetH(((_state.AF.high & 0xFU) - (u8 & 0xFU)) > 0xFU);
   SetCY(res > 0xFFU);
+  return 8;
 }
 
-void Cpu::CpAHl()
+int Cpu::CpAHl()
 {
   uint8_t u8 = _mmu.Read(_state.HL.reg);
   uint16_t res =
@@ -2296,15 +1861,17 @@ void Cpu::CpAHl()
   SetN(true);
   SetH(((_state.AF.high & 0xFU) - (u8 & 0xFU)) > 0xFU);
   SetCY(res > 0xFFU);
+  return 0x00;
 }
 
-void Cpu::LdHlPA()
+int Cpu::LdHlPA()
 {
   _mmu.Write(_state.HL.reg, _state.AF.high);
   ++_state.HL.reg;
+  return 8;
 }
 
-void Cpu::DecR(std::uint8_t &reg)
+int Cpu::DecR(std::uint8_t &reg)
 {
   std::uint8_t res = reg - 1;
 
@@ -2313,17 +1880,19 @@ void Cpu::DecR(std::uint8_t &reg)
   SetH(((reg & 0xFU) - 1) > 0xFU);
 
   reg = res;
+  return 4;
 }
 
-void Cpu::PopRr(Register &reg)
+int Cpu::PopRr(Register &reg)
 {
   reg.low = _mmu.Read(_state.SP.reg);
   ++_state.SP.reg;
   reg.high = _mmu.Read(_state.SP.reg);
   ++_state.SP.reg;
+  return 12;
 }
 
-void Cpu::RlA()
+int Cpu::RlA()
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
 
@@ -2334,22 +1903,25 @@ void Cpu::RlA()
 
   _state.AF.high = static_cast<uint8_t>(_state.AF.high << 1U);
   _state.AF.high = (_state.AF.high & static_cast<uint8_t>(~(1U << 0U))) | oldCY;
+  return 4;
 }
 
-void Cpu::PushRr(Register &reg)
+int Cpu::PushRr(Register &reg)
 {
   --_state.SP.reg;
   _mmu.Write(_state.SP.reg, reg.high);
   --_state.SP.reg;
   _mmu.Write(_state.SP.reg, reg.low);
+  return 16;
 }
 
-void Cpu::LdRR(std::uint8_t &reg1, std::uint8_t &reg2)
+int Cpu::LdRR(std::uint8_t &reg1, std::uint8_t &reg2)
 {
   reg1 = reg2;
+  return 4;
 }
 
-void Cpu::CAllCcU16(bool cc)
+int Cpu::CAllCcU16(bool cc)
 {
   auto low = _mmu.Read(_state.PC.reg++);
   auto high = _mmu.Read(_state.PC.reg++);
@@ -2363,10 +1935,15 @@ void Cpu::CAllCcU16(bool cc)
 
     _state.PC.low = low;
     _state.PC.high = high;
+    return 24;
+  }
+  else
+  {
+    return 12;
   }
 }
 
-void Cpu::RetCc(bool cc)
+int Cpu::RetCc(bool cc)
 {
   if (cc)
   {
@@ -2375,65 +1952,83 @@ void Cpu::RetCc(bool cc)
     auto high = _mmu.Read(_state.SP.reg);
     ++_state.SP.reg;
     _state.PC.reg = ToU16(low, high);
+    return 20;
+  }
+  else
+  {
+    return 8;
   }
 }
 
-void Cpu::LdRrU16(Register &reg)
+int Cpu::LdRrU16(Register &reg)
 {
   reg.low = _mmu.Read(_state.PC.reg++);
   reg.high = _mmu.Read(_state.PC.reg++);
+  return 12;
 }
 
-void Cpu::LdRU8(std::uint8_t &reg)
+int Cpu::LdRU8(std::uint8_t &reg)
 {
   reg = _mmu.Read(_state.PC.reg++);
+  return 8;
 }
 
-void Cpu::LdAIRr(Register &reg)
+int Cpu::LdAIRr(Register &reg)
 {
   _state.AF.high = _mmu.Read(reg.reg);
+  return 8;
 }
 
-void Cpu::LdHlMA()
+int Cpu::LdHlMA()
 {
   _mmu.Write(_state.HL.reg, _state.AF.high);
   --_state.HL.reg;
+  return 8;
 }
 
-void Cpu::LdIHlR(std::uint8_t &reg)
+int Cpu::LdIHlR(std::uint8_t &reg)
 {
   _mmu.Write(_state.HL.reg, reg);
+  return 8;
 }
 
-void Cpu::JrCCI8(bool cc)
+int Cpu::JrCCI8(bool cc)
 {
   auto i8 = static_cast<std::int8_t>(_mmu.Read(_state.PC.reg++));
   if (cc)
   {
     _state.PC.reg = static_cast<std::uint16_t>(_state.PC.reg + i8);
+    return 12;
+  }
+  else
+  {
+    return 8;
   }
 }
 
-void Cpu::LdhAU8()
+int Cpu::LdhAU8()
 {
   auto low = _mmu.Read(_state.PC.reg++);
   auto addr = ToU16(low, 0xFF);
   _state.AF.high = _mmu.Read(addr);
+  return 12;
 }
 
-void Cpu::LdhCA()
+int Cpu::LdhCA()
 {
   auto addr = ToU16(_state.BC.low, 0xFF);
   _mmu.Write(addr, _state.AF.high);
+  return 8;
 }
 
-void Cpu::LdhU8A()
+int Cpu::LdhU8A()
 {
   auto addr = ToU16(_mmu.Read(_state.PC.reg++), 0xFF);
   _mmu.Write(addr, _state.AF.high);
+  return 12;
 }
 
-void Cpu::IncR(std::uint8_t &reg)
+int Cpu::IncR(std::uint8_t &reg)
 {
   uint16_t res = reg + 1;
 
@@ -2442,15 +2037,17 @@ void Cpu::IncR(std::uint8_t &reg)
   SetH(((reg & 0x0FU) + 1) > 0x0FU);
 
   reg = (res & 0xFFU);
+  return 4;
 }
 
-void Cpu::IncRr(Register &reg)
+int Cpu::IncRr(Register &reg)
 {
   ++reg.reg;
+  return 8;
 }
 
 // extended opcodes
-void Cpu::RlR(std::uint8_t &reg)
+int Cpu::RlR(std::uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit7 = (reg & (1U << 7U)) >> 7U;
@@ -2461,18 +2058,20 @@ void Cpu::RlR(std::uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit7 == 1U);
+  return 0x00;
 }
 
-void Cpu::BitBR(unsigned int bit, std::uint8_t reg)
+int Cpu::BitBR(unsigned int bit, std::uint8_t reg)
 {
   auto bitValue = (reg & static_cast<std::uint8_t>(1U << bit)) >> bit;
   SetZ(bitValue == 0);
   SetN(false);
   SetH(true);
+  return 0x00;
 }
 
 // extended opcodes
-void Cpu::Rlc(uint8_t &reg)
+int Cpu::Rlc(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
   reg = static_cast<std::uint8_t>(reg << 1U);
@@ -2482,9 +2081,10 @@ void Cpu::Rlc(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit7 == 1U);
+  return 8;
 }
 
-void Cpu::Rrc(uint8_t &reg)
+int Cpu::Rrc(uint8_t &reg)
 {
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
@@ -2495,9 +2095,10 @@ void Cpu::Rrc(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit0 == 1U);
+  return 8;
 }
 
-void Cpu::Rl(uint8_t &reg)
+int Cpu::Rl(uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit7 = (reg & 0x80U) >> 7U;
@@ -2508,9 +2109,10 @@ void Cpu::Rl(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit7 == 1U);
+  return 8;
 }
 
-void Cpu::Rr(uint8_t &reg)
+int Cpu::Rr(uint8_t &reg)
 {
   uint8_t oldCY = (_state.AF.low & (1U << 4U)) >> 4U;
   uint8_t bit0 = (reg & 0x01U);
@@ -2522,9 +2124,10 @@ void Cpu::Rr(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit0 == 1U);
+  return 8;
 }
 
-void Cpu::Sla(uint8_t &reg)
+int Cpu::Sla(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
   reg = static_cast<std::uint8_t>(reg << 1U);
@@ -2533,9 +2136,10 @@ void Cpu::Sla(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit7 == 1U);
+  return 8;
 }
 
-void Cpu::Sra(uint8_t &reg)
+int Cpu::Sra(uint8_t &reg)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
   uint8_t bit0 = (reg & 0x01U);
@@ -2547,9 +2151,10 @@ void Cpu::Sra(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit0 == 1U);
+  return 8;
 }
 
-void Cpu::Srl(uint8_t &reg)
+int Cpu::Srl(uint8_t &reg)
 {
   uint8_t bit0 = (reg & 0x01U);
   reg = reg >> 1U;
@@ -2558,9 +2163,10 @@ void Cpu::Srl(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(bit0 == 1U);
+  return 8;
 }
 
-void Cpu::Swap(uint8_t &reg)
+int Cpu::Swap(uint8_t &reg)
 {
   uint8_t lowerNibble = (reg & 0x0FU);
   reg = reg >> 4U;
@@ -2570,26 +2176,30 @@ void Cpu::Swap(uint8_t &reg)
   SetN(false);
   SetH(false);
   SetCY(false);
+  return 8;
 }
 
-void Cpu::Bit(uint8_t reg, uint8_t bit)
+int Cpu::Bit(uint8_t reg, uint8_t bit)
 {
   uint8_t bitX = (reg & (1U << bit)) >> bit;
   _state.AF.low = (_state.AF.low & static_cast<std::uint8_t>(~(1U << 7U)))
                   | static_cast<std::uint8_t>(((!bitX) << 7U));
   SetN(false);
   SetH(true);
+  return 8;
 }
 
-void Cpu::Res(uint8_t &reg, uint8_t bit)
+int Cpu::Res(uint8_t &reg, uint8_t bit)
 {
   reg = (reg & ~(1U << bit));
+  return 8;
 }
 
-void Cpu::Set(uint8_t &reg, uint8_t bit)
+int Cpu::Set(uint8_t &reg, uint8_t bit)
 {
   reg = (reg & static_cast<std::uint8_t>(~(1U << bit)))
         | static_cast<std::uint8_t>((1U << bit));
+  return 8;
 }
 
 // utility
