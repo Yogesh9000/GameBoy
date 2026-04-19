@@ -9,7 +9,7 @@
 
 using json = nlohmann::json;
 
-static CpuState CreateStateFromJson(const auto& cpuState)
+static CpuState CreateStateFromJson(const auto &cpuState)
 {
   CpuState state{};
   state.AF.low = cpuState["f"];
@@ -25,22 +25,22 @@ static CpuState CreateStateFromJson(const auto& cpuState)
   return state;
 }
 
-static CpuState CreateInitialStateFromJson(const auto& test)
+static CpuState CreateInitialStateFromJson(const auto &test)
 {
   return CreateStateFromJson(test["initial"]);
 }
 
-static CpuState CreateFinalStateFromJson(const auto& test)
+static CpuState CreateFinalStateFromJson(const auto &test)
 {
   return CreateStateFromJson(test["final"]);
 }
 
-static MemoryManagementUnit CreateAndInitializeBusFromJson(const auto& test)
+static MemoryManagementUnit CreateAndInitializeBusFromJson(const auto &test)
 {
   MemoryManagementUnit mmu{};
   mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0x10000, 0x00));
 
-  for (const auto& memState : test["ram"])
+  for (const auto &memState : test["ram"])
   {
     uint16_t loc = memState[0];
     uint8_t data = memState[1];
@@ -63,17 +63,18 @@ static void TestInstruction(int test_num, bool extended = false)
   std::ifstream file{filePath};
   ASSERT_TRUE(file.is_open());
   json tests = json::parse(file);
-  for (const auto& test : tests)
+  for (const auto &test : tests)
   {
     auto initialState = CreateInitialStateFromJson(test);
     auto finalState = CreateFinalStateFromJson(test);
     auto mmu = CreateAndInitializeBusFromJson(test["initial"]);
+    auto cycles = test["cycles"].size() * 4;
     Cpu cpu{initialState, mmu};
-    cpu.Tick();
+    ASSERT_EQ(cycles, cpu.Tick());
     ASSERT_EQ(cpu.GetCpuState(), finalState)
         << std::format("Test Name: {} [Final State does not match]",
                static_cast<std::string>(test["name"]));
-    for (const auto& memState : test["final"]["ram"])
+    for (const auto &memState : test["final"]["ram"])
     {
       uint16_t loc = memState[0];
       uint8_t data = memState[1];
