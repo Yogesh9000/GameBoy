@@ -2,10 +2,13 @@ find_package(GTest CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
 add_executable(cpu_test test_main.cpp "cpu_test_single_step_test.cpp"
+                                     "cpu_test_blargg.cpp"
+                                     "blarggstestmemoryrange.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/cpu.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/mmu.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/interrupt.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/logmanager.cpp"
+                                     "${PROJECT_SOURCE_DIR}/src/timer.cpp"
                                      "${PROJECT_SOURCE_DIR}/src/concretememoryrange.cpp")
 
 target_include_directories(cpu_test PRIVATE "${PROJECT_SOURCE_DIR}/src")
