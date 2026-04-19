@@ -13,20 +13,31 @@ constexpr std::uint16_t SCX_REGISTER_ADDRESS{0xFF43};
 
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS0{0x9800};
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS1{0x9C00};
-constexpr std::uint16_t BG_WIN_TILEDATA_ADDRESS0{0x9000}; // This address mode uses 0x9000 as the base address and offset are signed
-constexpr std::uint16_t BG_WIN_TILEDATA_ADDRESS1{0x8000}; // This addresses mode uses 0x8000 as the base address and offset are unsigned
+constexpr std::uint16_t BG_WIN_TILEDATA_ADDRESS0{
+    0x9000};  // This address mode uses 0x9000 as the base address and offset
+              // are signed
+constexpr std::uint16_t BG_WIN_TILEDATA_ADDRESS1{
+    0x8000};  // This addresses mode uses 0x8000 as the base address and offset
+              // are unsigned
 constexpr unsigned int BG_WIN_TILEMAP_ROW_SIZE{32};
 
-constexpr unsigned int TILE_DATA_SIZE{16}; // each tile takes 16 bytes
+constexpr unsigned int TILE_DATA_SIZE{16};  // each tile takes 16 bytes
 constexpr unsigned int MAX_DOTS_PER_SCANLINE{456};
 
-constexpr unsigned int BOOTROM_ENABLE_ADDRESS{ 0xFF50 }; // writing to this address disable's bootrom
+constexpr unsigned int BOOTROM_ENABLE_ADDRESS{
+    0xFF50};  // writing to this address disable's bootrom
 
-constexpr unsigned int INTERRUPT_ENABLE{ 0xFFFF };
-constexpr unsigned int INTERRUPT_FLAG{ 0xFF0F };
+constexpr unsigned int INTERRUPT_ENABLE{0xFFFF};
+constexpr unsigned int INTERRUPT_FLAG{0xFF0F};
 
-constexpr unsigned int VBLANK_INTERRUPT_HANDLER_ADDRESS{ 0x40 };
-constexpr unsigned int STAT_INTERRUPT_HANDLER_ADDRESS{ 0x48 };
-constexpr unsigned int TIMER_INTERRUPT_HANDLER_ADDRESS{ 0x50 };
-constexpr unsigned int SERIAL_INTERRUPT_HANDLER_ADDRESS{ 0x58 };
-constexpr unsigned int JOYPAD_INTERRUPT_HANDLER_ADDRESS{ 0x60 };
+constexpr unsigned int VBLANK_INTERRUPT_HANDLER_ADDRESS{0x40};
+constexpr unsigned int STAT_INTERRUPT_HANDLER_ADDRESS{0x48};
+constexpr unsigned int TIMER_INTERRUPT_HANDLER_ADDRESS{0x50};
+constexpr unsigned int SERIAL_INTERRUPT_HANDLER_ADDRESS{0x58};
+constexpr unsigned int JOYPAD_INTERRUPT_HANDLER_ADDRESS{0x60};
+
+// Timer address
+constexpr std::uint16_t DIV{0xFF04};
+constexpr std::uint16_t TIMA{0xFF05};
+constexpr std::uint16_t TMA{0xFF06};
+constexpr std::uint16_t TAC{0xFF07};

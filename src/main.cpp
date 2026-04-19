@@ -1,10 +1,8 @@
 #include <exception>
-#include <format>
 #include <memory>
 
 #include "SDL3/SDL_events.h"
 #include "bootrom.hpp"
-#include "common.hpp"
 #include "concretememoryrange.hpp"
 #include "cpu.hpp"
 #include "filememoryrange.hpp"
@@ -12,7 +10,7 @@
 #include "mmu.hpp"
 #include "ppu.hpp"
 #include "sdldisplay.hpp"
-#include "spdlog/spdlog.h"
+#include "timer.hpp"
 
 int main(int argc, char **argv)
 {
@@ -68,6 +66,9 @@ int main(int argc, char **argv)
   // add oam
   mmu.AddMemoryRange(std::make_shared<ConcreteMemoryRange>(0xA0, 0xFE00));
 
+  auto timer = std::make_shared<Timer>(mmu);
+  mmu.AddMemoryRange(timer);
+
   Cpu cpu(mmu);
 
   // game loop
@@ -85,6 +86,7 @@ int main(int argc, char **argv)
         }
       }
       int cycles = cpu.Tick();
+      timer->Tick(cycles);
       ppu->Tick(cycles);
     }
   }

@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
                    "interrupt.hpp"
                    "interrupt.cpp"
                    "logmanager.cpp"
+                   "timer.cpp"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
