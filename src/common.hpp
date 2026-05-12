@@ -1,7 +1,5 @@
 #pragma once
-#include <format>
-#include <iostream>
-#include <string>
+#include <cstdint>
 
 // addresses
 constexpr std::uint16_t LY_REGISTER_ADDRESS{0xFF44};
@@ -10,6 +8,7 @@ constexpr std::uint16_t OAM_SIZE{0xA0};
 constexpr std::uint16_t OAM_START_ADDRESS{0xFE00};
 constexpr std::uint16_t SCY_REGISTER_ADDRESS{0xFF42};
 constexpr std::uint16_t SCX_REGISTER_ADDRESS{0xFF43};
+constexpr std::uint16_t BGP_REGISTER_ADDRESS{0xFF47};
 
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS0{0x9800};
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS1{0x9C00};

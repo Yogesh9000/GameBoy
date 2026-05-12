@@ -94,7 +94,7 @@ bool Ppu::Contains(std::uint16_t addr) const
 {
   return addr == LY_REGISTER_ADDRESS || addr == LCDC_REGISTER_ADDRESS
          || addr == SCX_REGISTER_ADDRESS || addr == SCY_REGISTER_ADDRESS
-         || _oamRam.Contains(addr);
+         || addr == BGP_REGISTER_ADDRESS || _oamRam.Contains(addr);
 }
 
 std::uint8_t Ppu::Read(std::uint16_t addr) const
@@ -114,6 +114,10 @@ std::uint8_t Ppu::Read(std::uint16_t addr) const
   else if (addr == SCY_REGISTER_ADDRESS)
   {
     return _scy;
+  }
+  else if (addr == BGP_REGISTER_ADDRESS)
+  {
+    return _bgp;
   }
   else if (_oamRam.Contains(addr))
   {
@@ -136,6 +140,10 @@ void Ppu::Write(std::uint16_t addr, std::uint8_t data)
   else if (addr == SCY_REGISTER_ADDRESS)
   {
     _scy = data;
+  }
+  else if (addr == BGP_REGISTER_ADDRESS)
+  {
+    _bgp = data;
   }
   else if (_oamRam.Contains(addr))
   {
@@ -160,6 +168,10 @@ std::uint8_t &Ppu::Address(std::uint16_t addr)
   else if (addr == SCY_REGISTER_ADDRESS)
   {
     return _scy;
+  }
+  else if (addr == BGP_REGISTER_ADDRESS)
+  {
+    return _bgp;
   }
   else if (_oamRam.Contains(addr))
   {
