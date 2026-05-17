@@ -41,7 +41,7 @@ void ConcreteMemoryRange::Write(std::uint16_t addr, std::uint8_t data)
   }
 }
 
-std::uint8_t& ConcreteMemoryRange::Address(std::uint16_t addr)
+std::uint8_t &ConcreteMemoryRange::Address(std::uint16_t addr)
 {
   // return data from memroy if memory range contains the address
   if (Contains(addr))

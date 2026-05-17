@@ -1,14 +1,15 @@
 #pragma once
 
 #include <cstdint>
-#include "ppuphase.hpp"
-#include "../mmu.hpp"
 
+#include "../mmu.hpp"
+#include "ppuphase.hpp"
 
 class VBlank : public PpuPhase
 {
 public:
-  explicit VBlank(MemoryManagementUnit &mmu, std::uint8_t &ly) : _mmu(mmu), _ly(ly)
+  explicit VBlank(MemoryManagementUnit &mmu, std::uint8_t &ly)
+      : _mmu(mmu), _ly(ly)
   {
   }
 

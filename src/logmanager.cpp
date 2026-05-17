@@ -11,7 +11,7 @@
 namespace LogManager
 {
 
-static spdlog::level::level_enum ParseLevel(const std::string& s)
+static spdlog::level::level_enum ParseLevel(const std::string &s)
 {
   if (s == "TRACE") return spdlog::level::trace;
   if (s == "DEBUG") return spdlog::level::debug;
@@ -23,7 +23,7 @@ static spdlog::level::level_enum ParseLevel(const std::string& s)
   return spdlog::level::info;  // safe default
 }
 
-void InitLogging(const std::string& level_str, const std::string& log_file)
+void InitLogging(const std::string &level_str, const std::string &log_file)
 {
   auto level = ParseLevel(level_str);
 
@@ -54,7 +54,7 @@ void InitLogging(const std::string& level_str, const std::string& log_file)
   spdlog::flush_on(spdlog::level::warn);  // auto-flush on warnings+
 }
 
-std::shared_ptr<spdlog::logger> GetLogger(const std::string& name)
+std::shared_ptr<spdlog::logger> GetLogger(const std::string &name)
 {
   // Return existing logger if already registered
   auto existing = spdlog::get(name);

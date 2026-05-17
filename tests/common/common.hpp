@@ -6,7 +6,7 @@
 
 #include "cpu.hpp"
 
-static bool operator==(const CpuState& a, const CpuState& b)
+static bool operator==(const CpuState &a, const CpuState &b)
 {
   return a.AF.low == b.AF.low && a.AF.high == b.AF.high && a.BC.low == b.BC.low
          && a.BC.high == b.BC.high && a.DE.low == b.DE.low
@@ -15,7 +15,7 @@ static bool operator==(const CpuState& a, const CpuState& b)
          && a.PC.reg == b.PC.reg;
 }
 
-static std::ostream& operator<<(std::ostream& os, const CpuState& state)
+static std::ostream &operator<<(std::ostream &os, const CpuState &state)
 {
   std::cout << std::format(
       "{{A={:02X}, B={:02X}, C={:02X}, D={:02X}, E={:02X}, H={:02X}, L={:02X}, F={:02X}, SP={:02X}, PC={:04X}",

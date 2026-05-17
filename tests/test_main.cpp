@@ -2,7 +2,7 @@
 
 #include "logmanager.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   LogManager::InitLogging(GB_LOG_LEVEL, "test_log.txt");
   ::testing::InitGoogleTest(&argc, argv);

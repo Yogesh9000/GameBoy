@@ -1,12 +1,13 @@
 #pragma once
 
 #include <spdlog/logger.h>
+
 #include <memory>
 #include <string>
 
 #include "concretememoryrange.hpp"
-#include "memoryrange.hpp"
 #include "filememoryrange.hpp"
+#include "memoryrange.hpp"
 
 class BootRom : public FileMemoryRange
 {

@@ -18,7 +18,7 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
-  std::uint8_t& Address(std::uint16_t addr) override;
+  std::uint8_t &Address(std::uint16_t addr) override;
 
 private:
   std::vector<std::uint8_t> _memory;
