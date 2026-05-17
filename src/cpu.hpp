@@ -33,6 +33,7 @@ public:
 private:
   int TickExtended();
 
+  std::uint8_t FetchOpcode();
   void HandleInterruptsIfAny();
   void DisableInterruptAndJumpToInterruptHandler(InterruptType interruptType);
 
@@ -166,4 +167,6 @@ private:
   CpuState _state;
   MemoryManagementUnit &_mmu;
   std::shared_ptr<spdlog::logger> _logger{};
+  bool _halted{};
+  bool _haltBug{};
 };

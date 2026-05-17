@@ -13,7 +13,8 @@
 // NOLINTBEGIN(readability-suspicious-call-argument, hicpp-signed-bitwise,
 // readability-convert-member-functions-to-static)
 
-Cpu::Cpu(MemoryManagementUnit &mmu) : _state{}, _mmu(mmu)
+Cpu::Cpu(MemoryManagementUnit &mmu)
+    : _state{}, _mmu(mmu), _halted(false), _haltBug(false)
 {
   _state._interrupt = std::make_shared<Interrupt>();
   _mmu.AddMemoryRange(_state._interrupt);
@@ -21,7 +22,7 @@ Cpu::Cpu(MemoryManagementUnit &mmu) : _state{}, _mmu(mmu)
 }
 
 Cpu::Cpu(CpuState state, MemoryManagementUnit &mmu)
-    : _state(std::move(state)), _mmu(mmu)
+    : _state(std::move(state)), _mmu(mmu), _halted(false), _haltBug(false)
 {
   if (!_state._interrupt)
   {
@@ -48,6 +49,20 @@ int Cpu::Tick()
       _mmu.Read(_state.PC.reg + 1), _mmu.Read(_state.PC.reg + 2),
       _mmu.Read(_state.PC.reg + 3));
 
+  if (_halted)
+  {
+    if ((_state._interrupt->_ie & _state._interrupt->_if & 0x1F) != 0x00)
+    {
+      _halted = false;
+    }
+    else
+    {
+      // If cpu is halted don't increment the PC
+      // return 4Ticks so other components like timer, ppu keep running
+      return 4;
+    }
+  }
+
   if (_state._interrupt->_enableRequested)
   {
     _state._interrupt->_enableRequested = false;
@@ -56,7 +71,7 @@ int Cpu::Tick()
   }
   HandleInterruptsIfAny();
 
-  auto opcode = _mmu.Read(_state.PC.reg++);
+  auto opcode = FetchOpcode();
 
   switch (opcode)
   {
@@ -1091,6 +1106,21 @@ int Cpu::TickExtended()
   return 0x00;
 }
 
+std::uint8_t Cpu::FetchOpcode()
+{
+  auto opcode = _mmu.Read(_state.PC.reg);
+  // If halt bug occured then don't increment the PC
+  if (_haltBug)
+  {
+    _haltBug = false;
+  }
+  else
+  {
+    _state.PC.reg++;
+  }
+  return opcode;
+}
+
 void Cpu::HandleInterruptsIfAny()
 {
   // Check if interrupts are enabled
@@ -1566,8 +1596,23 @@ int Cpu::AdcR(std::uint8_t reg)
 
 int Cpu::Halt()
 {
-  throw std::runtime_error(
-      std::format("Unimplemented instruction: 0x76 (HALT)"));
+  auto &interrupt = _state._interrupt;
+  if (interrupt->_ime)
+  {
+    _halted = true;
+  }
+  else
+  {
+    if ((interrupt->_ie & interrupt->_if & 0x1F) == 0x00)
+    {
+      _halted = true;
+    }
+    else
+    {
+      _haltBug = true;
+    }
+  }
+  return 4;
 }
 
 int Cpu::Ccf()
