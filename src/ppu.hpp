@@ -16,10 +16,10 @@ class Ppu : public MemoryRange
 public:
   enum class PpuMode : std::uint8_t
   {
-    OamSearch,
-    PixelRendering,
-    HBlank,
-    VBlank
+    HBlank = 0,
+    VBlank = 1,
+    OamSearch = 2,
+    PixelRendering = 3,
   };
 
 public:
@@ -40,12 +40,22 @@ public:
   std::uint8_t &Address(std::uint16_t addr) override;
 
 private:
+  void SetPpuModeInStatRegister(PpuMode mode);
+
+private:
   ConcreteMemoryRange _oamRam;
   std::uint8_t _ly{};
+  std::uint8_t _lyc{};
   std::uint8_t _lcdc{};
   std::uint8_t _scx{};
   std::uint8_t _scy{};
   std::uint8_t _bgp{};
+  std::uint8_t _obp0{};
+  std::uint8_t _obp1{};
+  std::uint8_t _lcdStatus{};
+  bool _currentStatLineStatus{};   // true if some stat condition is triggered
+  bool _previousStatLineStatus{};  // true if in previous tick stat condition
+                                   // was triggered
   MemoryManagementUnit &_mmu;
   Display &_display;
   OamSearch _oamPhase;

@@ -3,12 +3,16 @@
 
 // addresses
 constexpr std::uint16_t LY_REGISTER_ADDRESS{0xFF44};
+constexpr std::uint16_t LYC_REGISTER_ADDRESS{0xFF45};
 constexpr std::uint16_t LCDC_REGISTER_ADDRESS{0xFF40};
+constexpr std::uint16_t LCD_STAT_REGISTER_ADDRESS{0xFF41};
 constexpr std::uint16_t OAM_SIZE{0xA0};
 constexpr std::uint16_t OAM_START_ADDRESS{0xFE00};
 constexpr std::uint16_t SCY_REGISTER_ADDRESS{0xFF42};
 constexpr std::uint16_t SCX_REGISTER_ADDRESS{0xFF43};
 constexpr std::uint16_t BGP_REGISTER_ADDRESS{0xFF47};
+constexpr std::uint16_t OBP0_REGISTER_ADDRESS{0xFF48};
+constexpr std::uint16_t OBP1_REGISTER_ADDRESS{0xFF49};
 
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS0{0x9800};
 constexpr std::uint16_t BG_WIN_TILEMAP_ADDRESS1{0x9C00};
