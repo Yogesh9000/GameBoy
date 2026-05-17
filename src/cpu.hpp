@@ -164,6 +164,6 @@ private:
 
 private:
   CpuState _state;
-  MemoryManagementUnit _mmu;
+  MemoryManagementUnit &_mmu;
   std::shared_ptr<spdlog::logger> _logger{};
 };
