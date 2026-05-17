@@ -94,9 +94,9 @@ std::uint8_t &Timer::Address(std::uint16_t addr)
 void Timer::UpdateDividerRegister(int cycles)
 {
   _dividerCounter += cycles;
-  if (_dividerCounter > 255)
+  while (_dividerCounter >= 256)
   {
-    _dividerCounter = 0;
+    _dividerCounter -= 256;
     ++_div;
   }
 }
@@ -110,10 +110,13 @@ void Timer::UpdateTimers(int cycles)
   {
     _timerCounter += cycles;
 
-    // enough cpu clock cycles have happened to update the timer
-    if (_timerCounter >= GetClockFreq())
+    const int period = GetClockFreq();
+    // Handle every TIMA tick that fits in the elapsed cycles, without
+    // dropping leftover cycles (which would cause the timer to run slow).
+    while (_timerCounter >= period)
     {
-      if (_tima >= 255)
+      _timerCounter -= period;
+      if (_tima == 0xFF)
       {
         _tima = _tma;
         _mmu.RequestInterrupt(InterruptType::TIMER);
