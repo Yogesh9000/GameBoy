@@ -1,11 +1,14 @@
 #pragma once
 #include <spdlog/logger.h>
+
+#include <cstdint>
 #include <memory>
+
 #include "memoryrange.hpp"
 
 class Cpu;
 
-enum InterruptType
+enum InterruptType : std::uint8_t
 {
   VBLANK,
   LCD,
@@ -27,7 +30,7 @@ public:
 
   void Write(std::uint16_t addr, std::uint8_t data) override;
 
-  std::uint8_t& Address(std::uint16_t addr) override;
+  std::uint8_t &Address(std::uint16_t addr) override;
 
 private:
   friend class Cpu;
@@ -35,10 +38,11 @@ private:
   // This field determines if interrupts are enabled or disabled
   bool _ime;
   bool _enableRequested;
-  // IE register: https://gbdev.io/pandocs/Interrupts.html#ffff--ie-interrupt-enable
-  // IF register: https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
+  // IE register:
+  // https://gbdev.io/pandocs/Interrupts.html#ffff--ie-interrupt-enable
   std::uint8_t _ie;
+  // IF register:
+  // https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
   std::uint8_t _if;
   std::shared_ptr<spdlog::logger> _logger{};
 };
-

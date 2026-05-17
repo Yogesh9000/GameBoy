@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "common.hpp"
+#include "interrupt.hpp"
 #include "logmanager.hpp"
 #include "mmu.hpp"
 
@@ -115,7 +116,7 @@ void Timer::UpdateTimers(int cycles)
       if (_tima >= 255)
       {
         _tima = _tma;
-        _mmu.RequestInterrupt(2);
+        _mmu.RequestInterrupt(InterruptType::TIMER);
       }
       else
       {
