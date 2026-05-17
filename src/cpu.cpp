@@ -48,16 +48,15 @@ int Cpu::Tick()
       _mmu.Read(_state.PC.reg + 1), _mmu.Read(_state.PC.reg + 2),
       _mmu.Read(_state.PC.reg + 3));
 
-  auto opcode = _mmu.Read(_state.PC.reg++);
-
-  HandleInterruptsIfAny();
-
   if (_state._interrupt->_enableRequested)
   {
     _state._interrupt->_enableRequested = false;
     _state._interrupt->_ime = true;
     LOG_DEBUG(_logger, "Interrupt enabled");
   }
+  HandleInterruptsIfAny();
+
+  auto opcode = _mmu.Read(_state.PC.reg++);
 
   switch (opcode)
   {
